@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Ojekita</string>
+    <string name="regularservice">Layanan Ojekita</string>
+    <string name="foodservice">Layanan Kita Antar</string>
+    <string name="profil">Ubah Profil</string>
+    <string name="kitajemput">Ini merupakan salah satu fitur yang ada pada OJEKITA dimana para pengguna akan dijemput serta diantar ke tempat tujuan menggunakan motor</string>
+    <string name="mobilkita">Ini merupakan salah satu fitur yang ada pada OJEKITA dimana para pengguna akan dijemput serta diantar ke tempat tujuan menggunakan mobil</string>
+    <string name="kitaantar">Ini merupakan salah satu fitur yang ada pada OJEKITA dimana para pengguna dapat memesan makanan yang berada dalam wilayah jangkauan aplikasi lalu diantar ke tempat tujuan</string>
+</resources>

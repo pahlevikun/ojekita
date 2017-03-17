@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "334831481406",
+    "firebase_url": "https://ojekita-160416.firebaseio.com",
+    "project_id": "ojekita-160416",
+    "storage_bucket": "ojekita-160416.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334831481406:android:61e9af7388bc6873",
+        "android_client_info": {
+          "package_name": "com.wensoft.ojeku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334831481406-jt6uppf9c5n2mj8ivv80u8nnpn9eb0iq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2m2gz1arnOMo37vz6_ohpmur-xEwfNg8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_regular_service"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.wensoft.ojeku.main.fragments.handle_home.shuttle_service.RegularServiceActivity">
+    <RelativeLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/map1"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.ghost.myapplication.OrderActivity" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="12dp"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <EditText
+                android:id="@+id/et_pickup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_place_selector"
+                android:drawablePadding="8dp"
+                android:focusable="false"
+                android:textSize="15sp"
+                android:hint="Lokasi jemput"
+                android:fontFamily="sans-serif-condensed"
+                android:padding="4dp" />
+            <EditText
+                android:id="@+id/et_note_pick"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@android:color/transparent"
+                android:drawablePadding="10dp"
+                android:textSize="13sp"
+                android:maxLines="1"
+                android:fontFamily="sans-serif-condensed"
+                android:hint="Note..."
+                android:padding="4dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/darker_gray" />
+
+            <EditText
+                android:id="@+id/et_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_place_selector"
+                android:drawablePadding="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="15sp"
+                android:focusable="false"
+                android:hint="Lokasi tujuan"
+                android:padding="4dp" />
+            <EditText
+                android:id="@+id/et_note_destination"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@android:color/transparent"
+                android:drawablePadding="10dp"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="13sp"
+                android:hint="Note..."
+                android:padding="4dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_order_driver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:visibility="gone"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#bcbcbc"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_distance_order"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-condensed"
+                        android:padding="12dp"
+                        android:text="(4.0 km)"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/tv_price_order"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-condensed"
+                        android:padding="12dp"
+                        android:text="Rp. 14.000"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linLayDriver"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/profile_image"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        app:civ_border_width="2dp"
+                        android:src="@drawable/bg_pesan"
+                        app:civ_border_color="@color/colorAccent"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvNama"
+                            android:fontFamily="sans-serif-condensed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Muhammad Syafeudin"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvInvoice"
+                            android:fontFamily="sans-serif-condensed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="order number : XXXXX" />
+
+                        <TextView
+                            android:id="@+id/tvPlat"
+                            android:fontFamily="sans-serif-condensed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="E 5322 FX"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvPhone"
+                                android:fontFamily="sans-serif-condensed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0812 1234 1234" />
+
+                            <Button
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"
+                                android:background="@drawable/ic_call_black_24dp" />
+
+                            <Button
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:background="@drawable/ic_message_black_24dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonPesan"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="PESAN"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            android:textAllCaps="true"
+            android:background="@drawable/bg_button"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
+        <LinearLayout
+            android:id="@+id/linLayButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/buttonCancel"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:layout_weight="1"
+                android:text="Batalkan"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:textColor="@color/colorWhite"
+                android:textAllCaps="true"
+                android:background="@drawable/bg_button"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorGrey"/>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/buttonSelesai"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:layout_weight="1"
+                android:text="Selesai"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:textColor="@color/colorWhite"
+                android:textAllCaps="true"
+                android:background="@drawable/bg_button"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
