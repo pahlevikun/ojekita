@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.squareup.picasso.Picasso;
 import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.config.DirectionsJSONParser;
@@ -77,7 +79,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class CarServiceActivity  extends AppCompatActivity implements OnMapReadyCallback,
@@ -90,7 +91,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
     private float harga, jarakKM, kmInDec;
     private Polyline polyline;
 
-    private CircleImageView imageView;
+    private ImageView imageView;
 
 
     private List<Markers> markerList = new ArrayList<Markers>();
@@ -149,7 +150,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
         tvPlat = (TextView) findViewById(R.id.tvPlat);
         tvInvoice = (TextView) findViewById(R.id.tvInvoice);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
-        imageView = (CircleImageView) findViewById(R.id.profile_image);
+        imageView = (ImageView) findViewById(R.id.profile_image);
 
         layoutButton.setVisibility(View.GONE);
 
@@ -197,6 +198,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
             String plat_nomor = data.getStringExtra("plat_nomor");
             String telepon = data.getStringExtra("telepon");
             String avatar = data.getStringExtra("avatar");
+            final String urlAvatar = "http://ojekita.com/assets/images/"+avatar;
             final String orderid = data.getStringExtra("order_id");
             if(nama!=null){
                 btPesan.setVisibility(View.GONE);
@@ -209,6 +211,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
                 tvNama.setText(nama);
                 tvPlat.setText(plat_nomor);
                 tvPhone.setText(telepon);
+                Picasso.with(this).load(urlAvatar).into(imageView);
 
 
                 btFinish.setOnClickListener(new View.OnClickListener() {
@@ -284,28 +287,32 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
             CarServiceActivity.DownloadTask downloadTask = new CarServiceActivity.DownloadTask();
             downloadTask.execute(url);
             CalculationByDistance(latLngJemput,latLngTujuan);
-            /*if(jarakKM>50){
+            if(jarakKM>50){
+                jarakKM = kmInDec;
                 jarakKM = jarakKM - 10;
                 harga = jarakKM * 2000;
                 harga = harga + 25000;
             }else if(jarakKM>30){
+                jarakKM = kmInDec;
                 jarakKM = jarakKM - 10;
                 harga = jarakKM * 3000;
                 harga = harga + 25000;
             }else if(jarakKM>10){
+                jarakKM = kmInDec;
                 jarakKM = jarakKM - 10;
                 harga = jarakKM * 4000;
                 harga = harga + 25000;
             }else{
+                jarakKM = kmInDec;
                 harga = 25000;
-            }*/
-            if (jarakKM>5){
+            }
+            /*if (jarakKM>5){
                 jarakKM = jarakKM - 5;
                 harga = jarakKM * 2000;
                 harga = harga + 10000;
             }else {
                 harga = 10000;
-            }
+            }*/
             tvHarga.setText("Rp. "+harga);
             tvJarak.setText(kmInDec+" KM");
             noteTujuan = etNoteTujuan.getText().toString();
@@ -320,7 +327,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
             btPesan.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    makeOrder(String.valueOf(harga), String.valueOf(latJemput), String.valueOf(lngJemput), String.valueOf(latTujuan), String.valueOf(lngTujuan), alamatJemput,alamatTujuan,noteJemput,noteTujuan,String.valueOf(kmInDec));
+                    makeOrder(""+harga, ""+latJemput, ""+lngJemput, ""+latTujuan, ""+lngTujuan, alamatJemput,alamatTujuan,noteJemput,noteTujuan,""+kmInDec);
                 }
             });
         }
@@ -516,11 +523,10 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
                 lineOptions.color(getResources().getColor(R.color.colorAccent));
             }
 
-            // Drawing polyline in the Google Map for the i-th route
-            if(polyline==null){
+            if(polyline!=null){
+                polyline.remove();
                 polyline = mGoogleMap.addPolyline(lineOptions);
             }else{
-                polyline.remove();
                 polyline = mGoogleMap.addPolyline(lineOptions);
             }
         }
@@ -724,8 +730,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if(id==android.R.id.home) {

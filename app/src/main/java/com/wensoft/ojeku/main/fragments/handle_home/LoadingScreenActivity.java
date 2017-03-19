@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -80,6 +82,11 @@ public class LoadingScreenActivity extends AppCompatActivity {
     }
 
     private void perantaraCheck(final String order_id){
+        ImageView iv = (ImageView) findViewById(R.id.ivVespa);
+        TranslateAnimation moveLefttoRight = new TranslateAnimation(-400, 800, 0, 0);
+        moveLefttoRight.setDuration(3300);
+        moveLefttoRight.setFillAfter(true);
+        iv.startAnimation(moveLefttoRight);
 
         new Handler().postDelayed(new Thread() {
             @Override

@@ -19,12 +19,12 @@ import java.util.List;
  * Created by farhan on 3/9/17.
  */
 
-public class OrderCompleteAdapter extends BaseAdapter{
+public class OrderProcessAdapter extends BaseAdapter{
     private Activity activity;
     private LayoutInflater inflater;
     private List<OrderComplete> categoryItems;
 
-    public OrderCompleteAdapter(Activity activity, List<OrderComplete> categoryItems) {
+    public OrderProcessAdapter(Activity activity, List<OrderComplete> categoryItems) {
         this.activity = activity;
         this.categoryItems = categoryItems;
     }
@@ -67,14 +67,15 @@ public class OrderCompleteAdapter extends BaseAdapter{
         OrderComplete m = categoryItems.get(position);
         String orderType = m.getOrderType();
         invoice.setText("Invoice : "+m.getIdOrder());
+        title.setText(m.getAlamat());
         if(orderType.equals("1")){
-            title.setText("Kita Jemput");
+            //title.setText("Kita Jemput");
             imageView.setImageResource(R.drawable.ic_motor);
         }else if (orderType.equals("2")){
-            title.setText("Mobil Kita");
+            //title.setText("Mobil Kita");
             imageView.setImageResource(R.drawable.ic_motor);
         }else{
-            title.setText("Kita Antar");
+            //title.setText("Kita Antar");
             imageView.setImageResource(R.drawable.ic_motor);
         }
 

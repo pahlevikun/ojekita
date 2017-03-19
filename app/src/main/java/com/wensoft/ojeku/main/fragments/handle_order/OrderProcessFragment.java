@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,7 +20,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.wensoft.ojeku.R;
-import com.wensoft.ojeku.adapter.OrderCompleteAdapter;
+import com.wensoft.ojeku.adapter.OrderProcessAdapter;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.database.DatabaseHandler;
 import com.wensoft.ojeku.pojo.OrderComplete;
@@ -44,11 +45,12 @@ public class OrderProcessFragment extends Fragment {
     private ListView listView;
     private ProgressDialog loading;
     private String token;
-    private OrderCompleteAdapter adapter;
+    private OrderProcessAdapter adapter;
     private List<OrderComplete> dataList = new ArrayList<OrderComplete>();
     private ArrayList<Profil> valuesProfil;
     private DatabaseHandler dataSource;
     private ImageView imageView;
+    private LinearLayout kosong;
 
     public OrderProcessFragment() {
         // Required empty public constructor
@@ -63,14 +65,23 @@ public class OrderProcessFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_order_progress, container, false);
+
 
         dataSource = new DatabaseHandler(getActivity());
         valuesProfil = (ArrayList<Profil>) dataSource.getAllProfils();
+        View view =  inflater.inflate(R.layout.fragment_order_complete, container, false);
 
         listView = (ListView) view.findViewById(R.id.listOrderFinish);
-        imageView = (ImageView) view.findViewById(R.id.ivOrderOngoing);
 
+        adapter = new OrderProcessAdapter(getActivity(), dataList);
+        dataList.clear();
+        listView.setAdapter(adapter);
+        makeJsonObjectRequest();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         return view;
     }
@@ -93,6 +104,10 @@ public class OrderProcessFragment extends Fragment {
                         try {
                             for (int i=0; i<dataArray.length();i++){
                                 JSONObject isi = dataArray.getJSONObject(i);
+                                String invoice = isi.getString("invoice_number");
+                                String alamat = isi.getString("alamat_tujuan");
+                                String order_type = isi.getString("order_type");
+                                dataList.add(new OrderComplete(String.valueOf(i),invoice,order_type,alamat));
                             }
                         } catch (JSONException e) {
                             Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();
@@ -129,6 +144,13 @@ public class OrderProcessFragment extends Fragment {
         jsonObjReq.setRetryPolicy(policy);
         // Adding request to request queue
         AppController.getmInstance().addToRequestQueue(jsonObjReq);
+    }
+
+
+
+    private void hideDialog() {
+        if (loading.isShowing())
+            loading.dismiss();
     }
 
 }

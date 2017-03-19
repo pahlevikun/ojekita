@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.squareup.picasso.Picasso;
 import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.config.DirectionsJSONParser;
@@ -75,7 +77,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class RegularServiceActivity extends AppCompatActivity implements OnMapReadyCallback,
@@ -90,7 +91,7 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
     private float harga, jarakKM, kmInDec;
     private Polyline polyline;
 
-    private CircleImageView imageView;
+    private ImageView imageView;
 
 
     private List<Markers> markerList = new ArrayList<Markers>();
@@ -149,7 +150,7 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
         tvPlat = (TextView) findViewById(R.id.tvPlat);
         tvInvoice = (TextView) findViewById(R.id.tvInvoice);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
-        imageView = (CircleImageView) findViewById(R.id.profile_image);
+        imageView = (ImageView) findViewById(R.id.profile_image);
 
         layoutButton.setVisibility(View.GONE);
 
@@ -197,6 +198,7 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
             String plat_nomor = data.getStringExtra("plat_nomor");
             String telepon = data.getStringExtra("telepon");
             String avatar = data.getStringExtra("avatar");
+            final String urlAvatar = "http://ojekita.com/assets/images/"+avatar;
             final String orderid = data.getStringExtra("order_id");
             if(nama!=null){
                 btPesan.setVisibility(View.GONE);
@@ -209,6 +211,7 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
                 tvNama.setText(nama);
                 tvPlat.setText(plat_nomor);
                 tvPhone.setText(telepon);
+                Picasso.with(this).load(urlAvatar).into(imageView);
 
 
                 btFinish.setOnClickListener(new View.OnClickListener() {
@@ -307,11 +310,13 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
             }else{
                 harga = 25000;
             }*/
-            if (jarakKM>5){
+            if (kmInDec>5){
+                jarakKM = kmInDec;
                 jarakKM = jarakKM - 5;
                 harga = jarakKM * 2000;
                 harga = harga + 10000;
             }else {
+                jarakKM = kmInDec;
                 harga = 10000;
             }
             tvHarga.setText("Rp. "+harga);
@@ -328,7 +333,12 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
             btPesan.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    makeOrder(String.valueOf(harga), String.valueOf(latJemput), String.valueOf(lngJemput), String.valueOf(latTujuan), String.valueOf(lngTujuan), alamatJemput,alamatTujuan,noteJemput,noteTujuan,String.valueOf(kmInDec));
+                    makeOrder(""+harga, ""+latJemput, ""+lngJemput, ""+latTujuan, ""+lngTujuan, alamatJemput,alamatTujuan,noteJemput,noteTujuan,""+kmInDec);
+                    Log.i("pesan harga : ",""+harga);
+                    Log.i("pesan latAwal : ",""+latJemput);
+                    Log.i("pesan lngAwal : ",""+lngJemput);
+                    Log.i("pesan latAkhir : ",""+latTujuan);
+                    Log.i("pesan lngAkhir : ",""+lngTujuan);
                 }
             });
         }
@@ -590,10 +600,10 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
             }
 
             // Drawing polyline in the Google Map for the i-th route
-            if(polyline==null){
+            if(polyline!=null){
+                polyline.remove();
                 polyline = mGoogleMap.addPolyline(lineOptions);
             }else{
-                polyline.remove();
                 polyline = mGoogleMap.addPolyline(lineOptions);
             }
         }
@@ -669,7 +679,7 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
         AppController.getmInstance().addToRequestQueue(jsonObjReq);
     }
 
-    private void makeOrder(final String startLat, final String startLng, final String endLat, final String endLng, final String harga, final String Saddress, final String Eaddress, final String Snote, final String Enote, final String distance) {
+    private void makeOrder( final String harga, final String startLat, final String startLng, final String endLat, final String endLng, final String Saddress, final String Eaddress, final String Snote, final String Enote, final String distance) {
 
         loading = ProgressDialog.show(this,"Mohon Tunggu","Sedang memesan...",false,false);
 

@@ -49,7 +49,7 @@ public class FoodMenuActivity extends AppCompatActivity {
     private String id, name, token;
     private ProgressDialog loading;
     private Button btPesan;
-    private FoodMenuAdapter adapter;
+    public FoodMenuAdapter adapter;
     private ListView listView;
     private List<FoodMenu> dataList = new ArrayList<FoodMenu>();
     private ArrayList<Profil> valuesProfil;
@@ -156,6 +156,10 @@ public class FoodMenuActivity extends AppCompatActivity {
         jsonObjReq.setRetryPolicy(policy);
         // Adding request to request queue
         AppController.getmInstance().addToRequestQueue(jsonObjReq);
+    }
+
+    public void refreshList(){
+        adapter.notifyDataSetChanged();
     }
 
     @Override

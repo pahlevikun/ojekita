@@ -25,10 +25,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:src="@drawable/kota"/>
+        <RelativeLayout
+            android:layout_height="230dp"
+            android:layout_width="match_parent">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:src="@drawable/kota"/>
+            <ImageView
+                android:id="@+id/ivVespa"
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:src="@drawable/vespa"/>
+        </RelativeLayout>
     </LinearLayout>
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonCancel"

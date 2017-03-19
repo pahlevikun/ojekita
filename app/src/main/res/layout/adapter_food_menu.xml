@@ -52,7 +52,7 @@
                 android:textAllCaps="true"
                 android:background="@drawable/bg_button"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
-            <TextView
+            <EditText
                 android:id="@+id/textJumlah"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
