@@ -7,12 +7,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -22,11 +19,11 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.wensoft.ojeku.CustomLibrary.NonScrollGridView;
+import com.wensoft.ojeku.customlibrary.NonScrollGridView;
 import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.adapter.FoodBannerAdapter;
 import com.wensoft.ojeku.adapter.FoodCategoryAdapter;
-import com.wensoft.ojeku.CustomLibrary.NonScrollListView;
+import com.wensoft.ojeku.customlibrary.NonScrollListView;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.database.DatabaseHandler;
 import com.wensoft.ojeku.pojo.FoodBanner;
@@ -54,6 +51,8 @@ public class FoodServiceActivity extends AppCompatActivity {
     private DatabaseHandler dataSource;
     private String token;
 
+    private TextView tvRestoran, tvKategori;
+
 
     public FoodBannerAdapter adapterListView;
     public FoodCategoryAdapter adapterGridview;
@@ -70,6 +69,8 @@ public class FoodServiceActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         setTitle("Kita Antar");
 
+        tvRestoran = (TextView) findViewById(R.id.tvGetRestaurants);
+        tvKategori = (TextView) findViewById(R.id.tvGetCategory);
         listView = (NonScrollListView) findViewById(R.id.listViewBannerMakanan);
         gridView = (NonScrollGridView) findViewById(R.id.gridViewBannerKategori);
         listView.setClickable(true);
@@ -85,7 +86,7 @@ public class FoodServiceActivity extends AppCompatActivity {
         dataSource = new DatabaseHandler(this);
         valuesProfil = (ArrayList<Profil>) dataSource.getAllProfils();
 
-        makeOrder();
+        makeRequest();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -98,11 +99,26 @@ public class FoodServiceActivity extends AppCompatActivity {
                 Toast.makeText(FoodServiceActivity.this, ""+foodCategoryList.get(position).getName(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        tvRestoran.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FoodServiceActivity.this, FoodRestaurantsActivity.class);
+                startActivity(intent);
+            }
+        });
+        tvKategori.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        tvKategori.setVisibility(View.GONE);
     }
 
-    private void makeOrder() {
+    private void makeRequest() {
 
-        loading = ProgressDialog.show(this,"Mohon Tunggu","Sedang memesan...",false,false);
+        loading = ProgressDialog.show(this,"Mohon Tunggu","Sedang memuat...",false,false);
 
         for (Profil profil : valuesProfil){
             token = profil.getToken();

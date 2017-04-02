@@ -1,11 +1,10 @@
-package com.wensoft.ojeku.CustomLibrary;
+package com.wensoft.ojeku.customlibrary;
 
 /**
  * Created by farhan on 4/2/17.
  */
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.widget.GridView;
 
 public class NonScrollGridView extends GridView {

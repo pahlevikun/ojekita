@@ -103,17 +103,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <com.wensoft.ojeku.CustomLibrary.NonScrollListView
+            <com.wensoft.ojeku.customlibrary.NonScrollListView
                 android:id="@+id/listViewBannerMakanan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:dividerHeight="2dp"
-                android:divider="@color/colorAccent"></com.wensoft.ojeku.CustomLibrary.NonScrollListView>
+                android:divider="@color/colorAccent"></com.wensoft.ojeku.customlibrary.NonScrollListView>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/colorAccent"/>
             <TextView
+                android:id="@+id/tvGetRestaurants"
                 android:background="@drawable/bg_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -129,7 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/colorAccent"/>
-            <com.wensoft.ojeku.CustomLibrary.NonScrollGridView
+            <com.wensoft.ojeku.customlibrary.NonScrollGridView
                 android:id="@+id/gridViewBannerKategori"
                 android:numColumns="2"
                 android:gravity="center"
@@ -137,12 +138,13 @@
                 android:layout_height="wrap_content"
                 android:verticalSpacing="1dp"
                 android:horizontalSpacing="1dp"
-                android:stretchMode="columnWidth"></com.wensoft.ojeku.CustomLibrary.NonScrollGridView>
+                android:stretchMode="columnWidth"></com.wensoft.ojeku.customlibrary.NonScrollGridView>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/colorAccent"/>
             <TextView
+                android:id="@+id/tvGetCategory"
                 android:background="@drawable/bg_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

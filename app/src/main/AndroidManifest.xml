@@ -196,12 +196,13 @@
             android:name=".main.fragments.handle_home.LoadingScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".main.fragments.handle_order.OrderDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".main.fragments.handle_home.food_service.FoodRestaurantsActivity"></activity>
     </application>
 
 </manifest>

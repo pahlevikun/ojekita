@@ -1,4 +1,4 @@
-package com.wensoft.ojeku.CustomLibrary;
+package com.wensoft.ojeku.customlibrary;
 
 import android.content.Context;
 import android.util.AttributeSet;
