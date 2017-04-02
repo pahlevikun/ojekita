@@ -396,6 +396,7 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
         LatLng sydney = new LatLng(gps.getLatitude(), gps.getLongitude());
         mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(14));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        markerJemput = mGoogleMap.addMarker(new MarkerOptions().position(sydney).title("Lokasi Jemput").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_dest)));
 
 
 

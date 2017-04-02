@@ -22,18 +22,15 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.wensoft.ojeku.CustomLibrary.NonScrollGridView;
 import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.adapter.FoodBannerAdapter;
 import com.wensoft.ojeku.adapter.FoodCategoryAdapter;
-import com.wensoft.ojeku.adapter.FoodMenuAdapter;
+import com.wensoft.ojeku.CustomLibrary.NonScrollListView;
 import com.wensoft.ojeku.config.APIConfig;
-import com.wensoft.ojeku.config.ExpandableHeightGridView;
 import com.wensoft.ojeku.database.DatabaseHandler;
-import com.wensoft.ojeku.main.fragments.handle_home.LoadingScreenActivity;
-import com.wensoft.ojeku.main.fragments.handle_home.shuttle_service.CarServiceActivity;
 import com.wensoft.ojeku.pojo.FoodBanner;
 import com.wensoft.ojeku.pojo.FoodCategory;
-import com.wensoft.ojeku.pojo.Markers;
 import com.wensoft.ojeku.pojo.Profil;
 import com.wensoft.ojeku.singleton.AppController;
 
@@ -49,8 +46,8 @@ import java.util.Map;
 public class FoodServiceActivity extends AppCompatActivity {
 
     private LinearLayout linLayResto, linLayKategori;
-    private ListView listView;
-    private GridView gridView;
+    private NonScrollListView listView;
+    private NonScrollGridView gridView;
 
     private ProgressDialog loading;
     private ArrayList<Profil> valuesProfil;
@@ -73,11 +70,9 @@ public class FoodServiceActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         setTitle("Kita Antar");
 
-        listView = (ListView) findViewById(R.id.listViewBannerMakanan);
-        //gridView = (GridView) findViewById(R.id.gridViewBannerKategori);
-        listView.setEnabled(true);
+        listView = (NonScrollListView) findViewById(R.id.listViewBannerMakanan);
+        gridView = (NonScrollGridView) findViewById(R.id.gridViewBannerKategori);
         listView.setClickable(true);
-        gridView.setEnabled(true);
         gridView.setClickable(true);
         adapterListView = new FoodBannerAdapter(this, foodBannerList);
         adapterGridview = new FoodCategoryAdapter(this, foodCategoryList);
@@ -86,10 +81,6 @@ public class FoodServiceActivity extends AppCompatActivity {
 
         listView.setScrollContainer(false);
         gridView.setScrollContainer(false);
-
-
-        //ListUtils.setDynamicHeight(listView);
-        //ListUtils.setDynamicGridHeight(gridView);
 
         dataSource = new DatabaseHandler(this);
         valuesProfil = (ArrayList<Profil>) dataSource.getAllProfils();
@@ -101,23 +92,12 @@ public class FoodServiceActivity extends AppCompatActivity {
                 Toast.makeText(FoodServiceActivity.this, ""+foodBannerList.get(position).getName(), Toast.LENGTH_SHORT).show();
             }
         });
-        /*linLayResto = (LinearLayout) findViewById(R.id.linLayRestaurantFood);
-        linLayKategori = (LinearLayout) findViewById(R.id.linLayCategoryFood);
 
-        linLayResto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(FoodServiceActivity.this, ""+foodCategoryList.get(position).getName(), Toast.LENGTH_SHORT).show();
             }
         });
-
-        linLayKategori.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(FoodServiceActivity.this, FoodCategoryActivity.class);
-                startActivity(intent);
-            }
-        });*/
     }
 
     private void makeOrder() {
@@ -253,49 +233,8 @@ public class FoodServiceActivity extends AppCompatActivity {
         AppController.getmInstance().addToRequestQueue(jsonObjReq);
     }
 
-    public static class ListUtils {
-        public static void setDynamicHeight(ListView mListView) {
-            ListAdapter mListAdapter = mListView.getAdapter();
-            if (mListAdapter == null) {
-                // when adapter is null
-                return;
-            }
-            int height = 0;
-            int desiredWidth = View.MeasureSpec.makeMeasureSpec(mListView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-            for (int i = 0; i < mListAdapter.getCount(); i++) {
-                View listItem = mListAdapter.getView(i, null, mListView);
-                listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-                height += listItem.getMeasuredHeight();
-            }
-            ViewGroup.LayoutParams params = mListView.getLayoutParams();
-            params.height = height + (mListView.getDividerHeight() * (mListAdapter.getCount() - 1));
-            mListView.setLayoutParams(params);
-            mListView.requestLayout();
-        }
-
-        public static void setDynamicGridHeight(GridView mListView) {
-            ListAdapter mListAdapter = mListView.getAdapter();
-            if (mListAdapter == null) {
-                // when adapter is null
-                return;
-            }
-            int height = 0;
-            int desiredWidth = View.MeasureSpec.makeMeasureSpec(mListView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-            for (int i = 0; i < mListAdapter.getCount(); i++) {
-                View listItem = mListAdapter.getView(i, null, mListView);
-                listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-                height += listItem.getMeasuredHeight();
-            }
-            ViewGroup.LayoutParams params = mListView.getLayoutParams();
-            params.height = height + (2 * (mListAdapter.getCount() - 1));
-            mListView.setLayoutParams(params);
-            mListView.requestLayout();
-        }
-    }
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if(id==android.R.id.home) {

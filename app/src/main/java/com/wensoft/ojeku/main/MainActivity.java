@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         setupTabIcons();
 
         requestPermission();
-        requestPermission2();
     }
 
 
@@ -122,11 +121,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
-            if (checkSelfPermission(Manifest.permission.SEND_SMS)
-                    == PackageManager.PERMISSION_DENIED) {
+            if (checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED &&
+                    checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
 
                 Log.d("permission", "permission denied to SEND_SMS - requesting it");
-                String[] permissions = {Manifest.permission.SEND_SMS};
+                String[] permissions = {Manifest.permission.SEND_SMS,Manifest.permission.CALL_PHONE};
 
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
 
@@ -134,20 +133,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void requestPermission2(){
-        final int PERMISSION_REQUEST_CODE = 2;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
-            if (checkSelfPermission(Manifest.permission.CALL_PHONE)
-                    == PackageManager.PERMISSION_DENIED) {
-
-                Log.d("permission", "permission denied to CALL_PHONE - requesting it");
-                String[] permissions = {Manifest.permission.CALL_PHONE};
-
-                requestPermissions(permissions, PERMISSION_REQUEST_CODE);
-
-            }
-        }
-    }
 }
