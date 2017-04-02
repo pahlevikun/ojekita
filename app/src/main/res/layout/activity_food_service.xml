@@ -18,7 +18,7 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
-    <LinearLayout
+    <!--LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -94,5 +94,61 @@
             android:layout_height="wrap_content"
             android:src="@drawable/bg_kota"
             android:alpha=".75"/>
-    </LinearLayout>
+    </LinearLayout-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ListView
+                android:id="@+id/listViewBannerMakanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dividerHeight="2dp"
+                android:divider="@color/colorAccent"></ListView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorAccent"/>
+            <TextView
+                android:background="@drawable/bg_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lihat Restoran Selengkapnya"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:clickable="true"/>
+            <GridView
+                android:id="@+id/gridViewBannerKategori"
+                android:numColumns="2"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:stretchMode="columnWidth"></GridView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorAccent"/>
+            <TextView
+                android:background="@drawable/bg_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lihat Kategori Selengkapnya"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:clickable="true"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

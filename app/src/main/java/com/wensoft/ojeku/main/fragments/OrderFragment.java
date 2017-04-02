@@ -34,8 +34,8 @@ public class OrderFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new PagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new OrderCompleteFragment(), "Proses");
-        adapter.addFragment(new OrderProcessFragment(), "Selesai");
+        adapter.addFragment(new OrderProcessFragment(), "Proses");
+        adapter.addFragment(new OrderCompleteFragment(), "Selesai");
         viewPager.setAdapter(adapter);
     }
 

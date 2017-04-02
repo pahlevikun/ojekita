@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wensoft.ojeku.R;
+import com.wensoft.ojeku.pojo.OrderComplete;
 import com.wensoft.ojeku.pojo.OrderProcess;
 
 import java.util.List;
@@ -18,12 +19,12 @@ import java.util.List;
  * Created by farhan on 3/9/17.
  */
 
-public class OrderProcessAdapter extends BaseAdapter{
+public class OrderCompleteAdapter extends BaseAdapter{
     private Activity activity;
     private LayoutInflater inflater;
-    private List<OrderProcess> categoryItems;
+    private List<OrderComplete> categoryItems;
 
-    public OrderProcessAdapter(Activity activity, List<OrderProcess> categoryItems) {
+    public OrderCompleteAdapter(Activity activity, List<OrderComplete> categoryItems) {
         this.activity = activity;
         this.categoryItems = categoryItems;
     }
@@ -47,8 +48,7 @@ public class OrderProcessAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if (inflater == null)
-            inflater = (LayoutInflater) activity
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
             convertView = inflater.inflate(R.layout.adapter_order_process, null);
 
@@ -56,16 +56,10 @@ public class OrderProcessAdapter extends BaseAdapter{
         TextView invoice = (TextView) convertView.findViewById(R.id.invoiceComplete);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.ivorderComplete);
 
-        if (categoryItems.size()!=0){
-
-        }else {
-
-        }
-
         // getting movie data for the row
-        OrderProcess m = categoryItems.get(position);
+        OrderComplete m = categoryItems.get(position);
         String orderType = m.getOrderType();
-        invoice.setText("Invoice : "+m.getIdOrder());
+        invoice.setText("Invoice : "+m.getInvoice_number());
         title.setText(m.getAlamat_tujuan());
         if(orderType.equals("1")){
             //title.setText("Kita Jemput");

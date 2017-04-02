@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wensoft.ojeku.R;
@@ -13,6 +14,7 @@ public class InformationMakanActivity extends AppCompatActivity {
     private String textDetail;
     private TextView textView;
     private Toolbar toolbar;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,9 @@ public class InformationMakanActivity extends AppCompatActivity {
         toolbar.setTitle("Kita Antar");
         textView = (TextView) findViewById(R.id.textViewInformation);
         textView.setText(R.string.kitaantar);
+
+        imageView = (ImageView) findViewById(R.id.ivInformation);
+        imageView.setImageResource(R.drawable.ic_food);
     }
 
 

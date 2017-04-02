@@ -1,12 +1,14 @@
 package com.wensoft.ojeku.main.fragments.handle_order;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -23,7 +25,7 @@ import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.adapter.OrderProcessAdapter;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.database.DatabaseHandler;
-import com.wensoft.ojeku.pojo.OrderComplete;
+import com.wensoft.ojeku.pojo.OrderProcess;
 import com.wensoft.ojeku.pojo.Profil;
 import com.wensoft.ojeku.singleton.AppController;
 
@@ -46,11 +48,12 @@ public class OrderProcessFragment extends Fragment {
     private ProgressDialog loading;
     private String token;
     private OrderProcessAdapter adapter;
-    private List<OrderComplete> dataList = new ArrayList<OrderComplete>();
+    private List<OrderProcess> dataList = new ArrayList<OrderProcess>();
     private ArrayList<Profil> valuesProfil;
     private DatabaseHandler dataSource;
     private ImageView imageView;
     private LinearLayout kosong;
+    private Button btRefresh;
 
     public OrderProcessFragment() {
         // Required empty public constructor
@@ -69,9 +72,10 @@ public class OrderProcessFragment extends Fragment {
 
         dataSource = new DatabaseHandler(getActivity());
         valuesProfil = (ArrayList<Profil>) dataSource.getAllProfils();
-        View view =  inflater.inflate(R.layout.fragment_order_complete, container, false);
+        View view =  inflater.inflate(R.layout.fragment_order_process, container, false);
 
         listView = (ListView) view.findViewById(R.id.listOrderFinish);
+        btRefresh = (Button) view.findViewById(R.id.buttonRefresh);
 
         adapter = new OrderProcessAdapter(getActivity(), dataList);
         dataList.clear();
@@ -79,9 +83,27 @@ public class OrderProcessFragment extends Fragment {
         makeJsonObjectRequest();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                adapter.notifyDataSetChanged();
+                Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
+                intent.putExtra("order_id",dataList.get(position).getIdOrder());
+                intent.putExtra("start_latitude",dataList.get(position).getStart_latitude());
+                intent.putExtra("start_longitude",dataList.get(position).getStart_longitude());
+                intent.putExtra("end_latitude",dataList.get(position).getEnd_latitude());
+                intent.putExtra("end_longitude",dataList.get(position).getEnd_longitude());
+                intent.putExtra("alamat_penjemputan",dataList.get(position).getAlamat_penjemputan());
+                intent.putExtra("alamat_tujuan",dataList.get(position).getAlamat_tujuan());
+                intent.putExtra("total_price",dataList.get(position).getTotal_price());
+                intent.putExtra("jarak",dataList.get(position).getJarak());
+                startActivity(intent);
             }
         });
+        btRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataList.clear();
+                makeJsonObjectRequest();
+            }
+        });
+
 
         return view;
     }
@@ -103,11 +125,20 @@ public class OrderProcessFragment extends Fragment {
                         JSONArray dataArray = jObj.getJSONArray("data");
                         try {
                             for (int i=0; i<dataArray.length();i++){
-                                JSONObject isi = dataArray.getJSONObject(i);
+                                JSONObject isi = dataArray.getJSONObject(i);;
+                                String order_id = isi.getString("order_id");
                                 String invoice = isi.getString("invoice_number");
-                                String alamat = isi.getString("alamat_tujuan");
                                 String order_type = isi.getString("order_type");
-                                dataList.add(new OrderComplete(String.valueOf(i),invoice,order_type,alamat));
+                                String start_latitude = isi.getString("start_latitude");
+                                String start_longitude = isi.getString("start_longitude");
+                                String end_latitude = isi.getString("end_latitude");
+                                String end_longitude = isi.getString("end_longitude");
+                                String alamat_tujuan = isi.getString("alamat_tujuan");
+                                String alamat_penjemputan = isi.getString("alamat_penjemputan");
+                                String total_price = isi.getString("total_price");
+                                String jarak = isi.getString("jarak");
+                                dataList.add(new OrderProcess(String.valueOf(i),order_id,order_type,alamat_penjemputan,alamat_tujuan,invoice,
+                                        start_latitude,start_longitude,end_latitude,end_longitude,total_price,jarak));
                             }
                         } catch (JSONException e) {
                             Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();

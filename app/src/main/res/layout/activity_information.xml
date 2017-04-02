@@ -23,6 +23,11 @@
         android:layout_height="100dp"
         android:layout_marginLeft="20dp"
         android:src="@drawable/awan"/>
+    <ImageView
+        android:id="@+id/ivInformation"
+        android:layout_gravity="center"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
         <TextView
             android:id="@+id/textViewInformation"
             android:layout_width="match_parent"

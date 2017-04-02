@@ -1,6 +1,8 @@
 package com.wensoft.ojeku.main;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -12,6 +14,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.wensoft.ojeku.R;
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
+        requestPermission();
+        requestPermission2();
     }
 
 
@@ -110,5 +115,39 @@ public class MainActivity extends AppCompatActivity {
                 doubleBackToExitPressedOnce = false;
             }
         }, 2000);
+    }
+
+    public void requestPermission(){
+        final int PERMISSION_REQUEST_CODE = 1;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+            if (checkSelfPermission(Manifest.permission.SEND_SMS)
+                    == PackageManager.PERMISSION_DENIED) {
+
+                Log.d("permission", "permission denied to SEND_SMS - requesting it");
+                String[] permissions = {Manifest.permission.SEND_SMS};
+
+                requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+
+            }
+        }
+    }
+
+    public void requestPermission2(){
+        final int PERMISSION_REQUEST_CODE = 2;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+            if (checkSelfPermission(Manifest.permission.CALL_PHONE)
+                    == PackageManager.PERMISSION_DENIED) {
+
+                Log.d("permission", "permission denied to CALL_PHONE - requesting it");
+                String[] permissions = {Manifest.permission.CALL_PHONE};
+
+                requestPermissions(permissions, PERMISSION_REQUEST_CODE);
+
+            }
+        }
     }
 }

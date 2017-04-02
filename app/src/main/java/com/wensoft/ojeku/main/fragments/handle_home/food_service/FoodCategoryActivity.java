@@ -95,7 +95,7 @@ public class FoodCategoryActivity extends AppCompatActivity {
                                 JSONObject isi = dataArray.getJSONObject(i);
                                 String id = isi.getString("id");
                                 String name = isi.getString("name");
-                                dataList.add(new FoodCategory(String.valueOf(i),id,name,false));
+                                //dataList.add(new FoodCategory(String.valueOf(i),id,name,false));
                             }
                         } catch (JSONException e) {
                             Toast.makeText(FoodCategoryActivity.this, e.toString(), Toast.LENGTH_LONG).show();

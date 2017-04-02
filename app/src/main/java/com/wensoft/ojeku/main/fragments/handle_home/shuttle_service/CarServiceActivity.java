@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -106,7 +107,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
     private double latJemput, lngJemput, latTujuan, lngTujuan;
     private LatLng latLngJemput, latLngTujuan;
 
-    private Button btPesan, btCancel, btFinish;
+    private Button btPesan, btCancel, btFinish, btTelepon, btSms;
     private EditText etJemput, etTujuan, etNoteJemput, etNoteTujuan;
     private String jemput, tujuan, alamatJemput, alamatTujuan, noteJemput, noteTujuan;
     private TextView tvJarak, tvHarga, tvNama, tvPlat, tvPhone, tvInvoice;
@@ -137,6 +138,8 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
         btPesan = (Button) findViewById(R.id.buttonPesan);
         btCancel = (Button) findViewById(R.id.buttonCancel);
         btFinish = (Button) findViewById(R.id.buttonSelesai);
+        btTelepon = (Button) findViewById(R.id.btTelepon);
+        btSms = (Button) findViewById(R.id.btSMS);
         layoutButton = (LinearLayout) findViewById(R.id.linLayButton);
         etJemput = (EditText) findViewById(R.id.et_pickup);
         etTujuan = (EditText) findViewById(R.id.et_destination);
@@ -173,6 +176,9 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
             }
         });
         //makeJsonObjectRequest();
+
+        gps = new GPSTracker(CarServiceActivity.this);
+        getLocation(gps.getLatitude(),gps.getLongitude());
     }
 
     private void search(int kode) {
@@ -196,7 +202,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
         if (resultCode == RESULT_OK) {
             String nama = data.getStringExtra("nama_driver");
             String plat_nomor = data.getStringExtra("plat_nomor");
-            String telepon = data.getStringExtra("telepon");
+            final String telepon = data.getStringExtra("telepon");
             String avatar = data.getStringExtra("avatar");
             final String urlAvatar = "http://ojekita.com/assets/images/"+avatar;
             final String orderid = data.getStringExtra("order_id");
@@ -212,6 +218,20 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
                 tvPlat.setText(plat_nomor);
                 tvPhone.setText(telepon);
                 Picasso.with(this).load(urlAvatar).into(imageView);
+                btTelepon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", telepon, null));
+                        startActivity(intent);
+                    }
+                });
+                btSms.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", telepon, null));
+                        startActivity(intent);
+                    }
+                });
 
 
                 btFinish.setOnClickListener(new View.OnClickListener() {
@@ -278,7 +298,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
     }
 
     public void requestHarga(){
-        if(jemput!=null&&tujuan!=null){
+        if(alamatJemput!=null&&alamatTujuan!=null){
 
             latLngJemput = new LatLng(latJemput, lngJemput);
             latLngTujuan = new LatLng(latTujuan, lngTujuan);
@@ -287,32 +307,26 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
             CarServiceActivity.DownloadTask downloadTask = new CarServiceActivity.DownloadTask();
             downloadTask.execute(url);
             CalculationByDistance(latLngJemput,latLngTujuan);
-            if(jarakKM>50){
+            if(kmInDec>50){
                 jarakKM = kmInDec;
                 jarakKM = jarakKM - 10;
                 harga = jarakKM * 2000;
                 harga = harga + 25000;
-            }else if(jarakKM>30){
+            }else if(kmInDec>30&&jarakKM<=50){
                 jarakKM = kmInDec;
                 jarakKM = jarakKM - 10;
                 harga = jarakKM * 3000;
                 harga = harga + 25000;
-            }else if(jarakKM>10){
+            }else if(kmInDec>10&&jarakKM<=30){
                 jarakKM = kmInDec;
                 jarakKM = jarakKM - 10;
                 harga = jarakKM * 4000;
                 harga = harga + 25000;
-            }else{
+            }else if(kmInDec<=10){
                 jarakKM = kmInDec;
                 harga = 25000;
             }
-            /*if (jarakKM>5){
-                jarakKM = jarakKM - 5;
-                harga = jarakKM * 2000;
-                harga = harga + 10000;
-            }else {
-                harga = 10000;
-            }*/
+
             tvHarga.setText("Rp. "+harga);
             tvJarak.setText(kmInDec+" KM");
             noteTujuan = etNoteTujuan.getText().toString();
@@ -327,7 +341,7 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
             btPesan.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    makeOrder(""+harga, ""+latJemput, ""+lngJemput, ""+latTujuan, ""+lngTujuan, alamatJemput,alamatTujuan,noteJemput,noteTujuan,""+kmInDec);
+                    makeOrder(""+latJemput, ""+lngJemput, ""+latTujuan, ""+lngTujuan,""+harga,  alamatJemput,alamatTujuan,noteJemput,noteTujuan,""+kmInDec);
                 }
             });
         }
@@ -365,8 +379,11 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
 
         gps = new GPSTracker(CarServiceActivity.this);
         LatLng sydney = new LatLng(gps.getLatitude(), gps.getLongitude());
+//        getLocation(gps.getLatitude(),gps.getLongitude());
+
         mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(14));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        markerJemput = mGoogleMap.addMarker(new MarkerOptions().position(sydney).title("Lokasi Jemput").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_dest)));
 
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         //mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
@@ -376,6 +393,21 @@ public class CarServiceActivity  extends AppCompatActivity implements OnMapReady
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
 
         //makeJsonObjectRequest();
+    }
+
+    public void getLocation(final double lat, final double lng){
+        try {
+            geocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
+            addresses = geocoder.getFromLocation(lat, lng, 1);
+            etJemput.setText(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+            alamatJemput = etJemput.getText().toString();
+
+            latJemput = lat;
+            lngJemput = lng;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

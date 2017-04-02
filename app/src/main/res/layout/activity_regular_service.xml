@@ -15,8 +15,7 @@
             android:id="@+id/map1"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="com.ghost.myapplication.OrderActivity" />
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ic_place_selector"
+                android:drawableLeft="@drawable/ic_place_jemput"
                 android:drawablePadding="8dp"
                 android:focusable="false"
                 android:textSize="15sp"
@@ -63,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:drawableLeft="@drawable/ic_place_selector"
+                android:drawableLeft="@drawable/ic_place_tujuan"
                 android:drawablePadding="8dp"
                 android:fontFamily="sans-serif-condensed"
                 android:textSize="15sp"
@@ -188,6 +187,7 @@
                                 android:text="0812 1234 1234" />
 
                             <Button
+                                android:id="@+id/btTelepon"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:layout_marginLeft="12dp"
@@ -195,6 +195,7 @@
                                 android:background="@drawable/ic_call_black_24dp" />
 
                             <Button
+                                android:id="@+id/btSMS"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:background="@drawable/ic_message_black_24dp" />

@@ -6,19 +6,13 @@ package com.wensoft.ojeku.pojo;
 
 public class FoodCategory {
 
-    String idList;
-    String idCat;
-    String nm;
-    boolean select;
+    public String idList;
+    public String idCat;
+    public String name;
+    public String banner;
+    public String is_featured;
 
     public FoodCategory() {
-    }
-
-    public FoodCategory(String idList, String idCat, String nm,boolean select) {
-        this.idList = idList;
-        this.idCat = idCat;
-        this.nm = nm;
-        this.select = select;
     }
 
     public String getIdList() {
@@ -37,21 +31,37 @@ public class FoodCategory {
         this.idCat = idCat;
     }
 
-    public String getNm() {
-        return nm;
+    public String getName() {
+        return name;
     }
 
-    public void setNm(String nm) {
-        this.nm = nm;
+    public void setName(String name) {
+        this.name = name;
     }
 
-
-    public boolean isSelected() {
-        return select;
+    public String getBanner() {
+        return banner;
     }
 
-    public void setSelected(boolean select) {
-        this.select = select;
+    public void setBanner(String banner) {
+        this.banner = banner;
     }
+
+    public String getIs_featured() {
+        return is_featured;
+    }
+
+    public void setIs_featured(String is_featured) {
+        this.is_featured = is_featured;
+    }
+
+    public FoodCategory(String idList, String idCat, String name, String banner, String is_featured) {
+        this.idList = idList;
+        this.idCat = idCat;
+        this.name = name;
+        this.banner = banner;
+        this.is_featured = is_featured;
+    }
+
 
 }

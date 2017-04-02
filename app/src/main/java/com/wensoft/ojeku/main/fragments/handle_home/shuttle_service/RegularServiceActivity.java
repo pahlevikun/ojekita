@@ -173,6 +173,9 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
             }
         });
         //makeJsonObjectRequest();
+
+        gps = new GPSTracker(RegularServiceActivity.this);
+        getLocation(gps.getLatitude(),gps.getLongitude());
     }
 
     private void search(int kode) {
@@ -286,7 +289,7 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
     }
 
     public void requestHarga(){
-        if(jemput!=null&&tujuan!=null){
+        if(alamatJemput!=null&&alamatTujuan!=null){
 
             latLngJemput = new LatLng(latJemput, lngJemput);
             latLngTujuan = new LatLng(latTujuan, lngTujuan);
@@ -404,6 +407,21 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
 
         //makeJsonObjectRequest();
+    }
+
+    public void getLocation(final double lat, final double lng){
+        try {
+            geocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
+            addresses = geocoder.getFromLocation(lat, lng, 1);
+            etJemput.setText(addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+            alamatJemput = etJemput.getText().toString();
+
+            latJemput = lat;
+            lngJemput = lng;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
    /*protected synchronized void buildGoogleApiClient() {
