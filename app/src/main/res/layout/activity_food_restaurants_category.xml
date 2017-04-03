@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_food_category"
+    android:id="@+id/activity_food_restaurants_category"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.wensoft.ojeku.main.fragments.handle_home.food_service.FoodCategoryActivity">
+    tools:context="com.wensoft.ojeku.main.fragments.handle_home.food_service.FoodRestaurantsCategoryActivity">
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -20,13 +19,10 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
     <ListView
-        android:id="@+id/listViewFoodCategory"
+        android:id="@+id/listViewFoodCategoryRestaurants"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/bg_kota"
-        android:alpha=".75"/>
+        android:dividerHeight="2dp"
+        android:divider="@color/colorAccent"
+        />
 </LinearLayout>

@@ -19,10 +19,10 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.wensoft.ojeku.R;
-import com.wensoft.ojeku.adapter.FoodCategoryAdapter;
+import com.wensoft.ojeku.adapter.FoodRestaurantsAdapter;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.database.DatabaseHandler;
-import com.wensoft.ojeku.pojo.FoodCategory;
+import com.wensoft.ojeku.pojo.FoodBanner;
 import com.wensoft.ojeku.pojo.Profil;
 import com.wensoft.ojeku.singleton.AppController;
 
@@ -35,52 +35,61 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FoodCategoryActivity extends AppCompatActivity {
+public class FoodRestaurantsCategoryActivity extends AppCompatActivity {
+
+    private String judul,id,token;
 
     private ProgressDialog loading;
-    private FoodCategoryAdapter adapter;
-    private ListView listView;
-    private List<FoodCategory> dataList = new ArrayList<FoodCategory>();
     private ArrayList<Profil> valuesProfil;
     private DatabaseHandler dataSource;
-    private String token;
+    private ListView listView;
+    private FoodRestaurantsAdapter adapterListView;
+    private List<FoodBanner> foodBannerList = new ArrayList<FoodBanner>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_food_category);
+        setContentView(R.layout.activity_food_restaurants_category);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        setTitle("Kategori Makanan");
+        Intent ambil = getIntent();
+        judul = ambil.getStringExtra("nama");
+        id = ambil.getStringExtra("id");
+        setTitle("Kategori "+judul);
 
         dataSource = new DatabaseHandler(this);
         valuesProfil = (ArrayList<Profil>) dataSource.getAllProfils();
 
-        listView = (ListView) findViewById(R.id.listViewFoodCategory);
-        adapter = new FoodCategoryAdapter(this, dataList);
-        listView.setAdapter(adapter);
-        makeJsonObjectRequest();
+        listView = (ListView) findViewById(R.id.listViewFoodCategoryRestaurants);
+        adapterListView = new FoodRestaurantsAdapter(this, foodBannerList);
+        listView.setAdapter(adapterListView);
+
+        makeRequest();
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent (FoodCategoryActivity.this, FoodCategoryListActivity.class);
-                intent.putExtra("id",dataList.get(position).getIdCat());
+                Intent intent = new Intent(FoodRestaurantsCategoryActivity.this, FoodMenuActivity.class);
+                intent.putExtra("id",foodBannerList.get(position).getCategory_id());
+                intent.putExtra("nama",foodBannerList.get(position).getName());
                 startActivity(intent);
             }
         });
 
 
-
     }
 
-    private void makeJsonObjectRequest() {
+    private void makeRequest() {
+
         loading = ProgressDialog.show(this,"Mohon Tunggu","Sedang memuat...",false,false);
 
-        for(Profil profil : valuesProfil){
+        for (Profil profil : valuesProfil){
             token = profil.getToken();
         }
-        StringRequest jsonObjReq = new StringRequest(Request.Method.GET, APIConfig.API_FOOD_CATEGORY, new Response.Listener<String>() {
+
+        StringRequest jsonObjReq = new StringRequest(Request.Method.POST, APIConfig.API_GET_RESTAURANTS_BY_CATEGORY, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -89,39 +98,48 @@ public class FoodCategoryActivity extends AppCompatActivity {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
                     if (!error) {
-                        JSONArray dataArray = jObj.getJSONArray("data");
-                        try {
-                            for (int i=0; i<dataArray.length();i++){
-                                JSONObject isi = dataArray.getJSONObject(i);
-                                String id = isi.getString("id");
-                                String name = isi.getString("name");
-                                //dataList.add(new FoodCategory(String.valueOf(i),id,name,false));
+                        JSONArray array = jObj.getJSONArray("data");
+                        for(int i = 0; i < array.length(); i++){
+                            JSONObject data = array.getJSONObject(i);
+                            String id = data.getString("id");
+                            String category_id = data.getString("category_id");
+                            String name = data.getString("name");
+                            String open_time = data.getString("open_time");
+                            String close_time = data.getString("close_time");
+                            Double latitude = data.getDouble("latitude");
+                            Double longitude = data.getDouble("longitude");
+                            String is_banner = data.getString("is_banner");
+                            if(is_banner.equals("0")){
+                                foodBannerList.add(new FoodBanner(String.valueOf(i),id,category_id,name,open_time,
+                                        close_time,latitude,longitude,is_banner,""));
                             }
-                        } catch (JSONException e) {
-                            Toast.makeText(FoodCategoryActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                         }
                     }
                 } catch (JSONException e) {
-                    Toast.makeText(FoodCategoryActivity.this, ""+e, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FoodRestaurantsCategoryActivity.this, ""+e, Toast.LENGTH_SHORT).show();
+                    hideDialog();
                 }
-                adapter.notifyDataSetChanged();
+                adapterListView.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
                 hideDialog();
-                Toast.makeText(FoodCategoryActivity.this, ""+error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(FoodRestaurantsCategoryActivity.this, ""+error, Toast.LENGTH_SHORT).show();
             }
         }){
             @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("category_id",id);
+                return params;
+            }
+            @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 String bearer = "Bearer " + token;
-                Map<String, String> headersSys = super.getHeaders();
                 Map<String, String> headers = new HashMap<String, String>();
-                headersSys.remove("Authorization");
                 headers.put("Authorization", bearer);
-                headers.putAll(headersSys);
                 return headers;
             }
         };
@@ -131,13 +149,12 @@ public class FoodCategoryActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         jsonObjReq.setRetryPolicy(policy);
-        // Adding request to request queue
         AppController.getmInstance().addToRequestQueue(jsonObjReq);
     }
 
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if(id==android.R.id.home) {
@@ -147,7 +164,6 @@ public class FoodCategoryActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public void onBackPressed() {
         finish();

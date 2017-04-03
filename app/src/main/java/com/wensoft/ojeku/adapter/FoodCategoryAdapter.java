@@ -1,5 +1,9 @@
 package com.wensoft.ojeku.adapter;
 
+/**
+ * Created by farhan on 4/3/17.
+ */
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;

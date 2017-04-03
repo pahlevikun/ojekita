@@ -1,10 +1,13 @@
 package com.wensoft.ojeku.main.fragments.handle_home.food_service;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -64,6 +67,14 @@ public class FoodRestaurantsActivity extends AppCompatActivity {
 
         makeRequest();
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(FoodRestaurantsActivity.this, FoodMenuActivity.class);
+                intent.putExtra("id",foodBannerList.get(position).getCategory_id());
+                intent.putExtra("nama",foodBannerList.get(position).getName());
+                startActivity(intent);
+            }
+        });
 
     }
 

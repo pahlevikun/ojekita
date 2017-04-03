@@ -3,76 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/linLaySection"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingBottom="10dp"
-    android:paddingTop="10dp">
+    android:padding="6dip">
 
-    <TextView
-        android:id="@+id/textMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:paddingLeft="10dp"
-        android:layout_weight="0.8"
-        android:text="Burger Kentang"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-condensed"
-        android:textSize="16sp"/>
+    <ImageView
+        android:id="@+id/ivorder"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_collections_black_24dp"/>
 
     <LinearLayout
-        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/textHarga"
-            android:layout_width="match_parent"
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textStyle="bold"
             android:fontFamily="sans-serif-condensed"
-            android:textSize="13sp"
-            android:gravity="center"
-            android:text="Rp. 7500"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:gravity="center_vertical">
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/buttonMin"
-                android:layout_width="30dp"
-                android:layout_height="25dp"
-                android:text="-"
-                android:layout_weight="1"
-                android:textColor="@color/colorWhite"
-                android:textAllCaps="true"
-                android:background="@drawable/bg_button"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
-            <EditText
-                android:id="@+id/textJumlah"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:textSize="12sp"
-                android:layout_weight="1"
-                android:text="0"/>
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/buttonMax"
-                android:layout_width="30dp"
-                android:layout_height="25dp"
-                android:text="+"
-                android:layout_weight="1"
-                android:textColor="@color/colorWhite"
-                android:textAllCaps="true"
-                android:background="@drawable/bg_button"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
-        </LinearLayout>
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/textPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:paddingTop="5dp"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="14sp"/>
     </LinearLayout>
 
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkBox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        app:buttonTint="@color/colorPrimaryDark"/>
 </LinearLayout>

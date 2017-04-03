@@ -178,16 +178,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".main.fragments.handle_home.food_service.FoodCategoryActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".main.fragments.handle_home.food_service.FoodCategoryListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".main.fragments.handle_home.food_service.FoodMenuActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
@@ -202,7 +192,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".main.fragments.handle_home.food_service.FoodRestaurantsActivity"></activity>
+        <activity android:name=".main.fragments.handle_home.food_service.FoodRestaurantsActivity" />
+        <activity android:name=".main.fragments.handle_home.food_service.FoodRestaurantsCategoryActivity"></activity>
     </application>
 
 </manifest>

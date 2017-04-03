@@ -19,10 +19,10 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.wensoft.ojeku.adapter.FoodCategoryAdapter;
 import com.wensoft.ojeku.customlibrary.NonScrollGridView;
 import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.adapter.FoodBannerAdapter;
-import com.wensoft.ojeku.adapter.FoodCategoryAdapter;
 import com.wensoft.ojeku.customlibrary.NonScrollListView;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.database.DatabaseHandler;
@@ -90,13 +90,19 @@ public class FoodServiceActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(FoodServiceActivity.this, ""+foodBannerList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(FoodServiceActivity.this, FoodMenuActivity.class);
+                intent.putExtra("id",foodBannerList.get(position).getCategory_id());
+                intent.putExtra("nama",foodBannerList.get(position).getName());
+                startActivity(intent);
             }
         });
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(FoodServiceActivity.this, ""+foodCategoryList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(FoodServiceActivity.this, FoodRestaurantsCategoryActivity.class);
+                intent.putExtra("id",foodCategoryList.get(position).getIdCat());
+                intent.putExtra("nama",foodCategoryList.get(position).getName());
+                startActivity(intent);
             }
         });
 

@@ -11,18 +11,15 @@ public class FoodMenu {
     String idRes;
     String name;
     String price;
-    String sum;
+    boolean selected = false;
 
-    public FoodMenu() {
-    }
-
-    public FoodMenu(String idList, String idMenu, String idRes, String nm, String price, String sum) {
+    public FoodMenu(String idList, String idMenu, String idRes, String nm, String price, boolean selected) {
         this.idList = idList;
         this.idMenu = idMenu;
         this.idRes = idRes;
         this.name = nm;
         this.price = price;
-        this.sum = sum;
+        this.selected = selected;
     }
 
     public String getIdList() {
@@ -65,12 +62,11 @@ public class FoodMenu {
         this.price = price;
     }
 
-    public String getSum() {
-        return sum;
+    public boolean isSelected() {
+        return selected;
     }
 
-    public void setSum(String sum) {
-        this.sum = sum;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
-
 }
