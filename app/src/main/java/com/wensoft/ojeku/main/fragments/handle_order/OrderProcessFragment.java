@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,7 @@ public class OrderProcessFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
                 intent.putExtra("order_id",dataList.get(position).getIdOrder());
+                intent.putExtra("order_type",dataList.get(position).getOrderType());
                 intent.putExtra("start_latitude",dataList.get(position).getStart_latitude());
                 intent.putExtra("start_longitude",dataList.get(position).getStart_longitude());
                 intent.putExtra("end_latitude",dataList.get(position).getEnd_latitude());
@@ -93,6 +95,11 @@ public class OrderProcessFragment extends Fragment {
                 intent.putExtra("alamat_tujuan",dataList.get(position).getAlamat_tujuan());
                 intent.putExtra("total_price",dataList.get(position).getTotal_price());
                 intent.putExtra("jarak",dataList.get(position).getJarak());
+                intent.putExtra("food_price",dataList.get(position).getFood_price());
+                intent.putExtra("asal","proses");
+                Log.d("ALAMAT",dataList.get(position).getAlamat_penjemputan());
+                Log.d("ALAMAT",dataList.get(position).getAlamat_tujuan());
+                Log.d("ORDER ID KIRIM",dataList.get(position).getIdOrder());
                 startActivity(intent);
             }
         });
@@ -133,12 +140,15 @@ public class OrderProcessFragment extends Fragment {
                                 String start_longitude = isi.getString("start_longitude");
                                 String end_latitude = isi.getString("end_latitude");
                                 String end_longitude = isi.getString("end_longitude");
-                                String alamat_tujuan = isi.getString("alamat_tujuan");
                                 String alamat_penjemputan = isi.getString("alamat_penjemputan");
+                                String alamat_tujuan = isi.getString("alamat_tujuan");
                                 String total_price = isi.getString("total_price");
+                                String food_price = isi.getString("food_price");
                                 String jarak = isi.getString("jarak");
+                                Log.d("ALAMAT",alamat_penjemputan);
+                                Log.d("ALAMAT",alamat_tujuan);
                                 dataList.add(new OrderProcess(String.valueOf(i),order_id,order_type,alamat_penjemputan,alamat_tujuan,invoice,
-                                        start_latitude,start_longitude,end_latitude,end_longitude,total_price,jarak));
+                                        start_latitude,start_longitude,end_latitude,end_longitude,total_price,jarak,food_price));
                             }
                         } catch (JSONException e) {
                             Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();

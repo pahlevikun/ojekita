@@ -22,6 +22,7 @@ public class OrderComplete {
     String start_longitude;
     String end_latitude;
     String end_longitude;
+    String food_price;
 
     public OrderComplete() {
     }
@@ -29,7 +30,7 @@ public class OrderComplete {
     public OrderComplete(String idList, String idOrder, String orderType, String invoice_number, String alamat_penjemputan,
                          String alamat_tujuan, String total_price, String jarak, String nama_driver, String avatar_driver,
                          String plat_nomor, String telepon, String start_latitude, String start_longitude,
-                         String end_latitude, String end_longitude) {
+                         String end_latitude, String end_longitude, String food_price) {
         this.idList = idList;
         this.idOrder = idOrder;
         this.orderType = orderType;
@@ -46,6 +47,7 @@ public class OrderComplete {
         this.start_longitude = start_longitude;
         this.end_latitude = end_latitude;
         this.end_longitude = end_longitude;
+        this.food_price = food_price;
     }
 
     public String getIdList() {
@@ -174,5 +176,13 @@ public class OrderComplete {
 
     public void setEnd_longitude(String end_longitude) {
         this.end_longitude = end_longitude;
+    }
+
+    public String getFood_price() {
+        return food_price;
+    }
+
+    public void setFood_price(String food_price) {
+        this.food_price = food_price;
     }
 }

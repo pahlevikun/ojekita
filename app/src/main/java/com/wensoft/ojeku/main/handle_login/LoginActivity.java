@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.database.DatabaseHandler;
 import com.wensoft.ojeku.main.MainActivity;
@@ -60,7 +62,9 @@ public class LoginActivity extends AppCompatActivity {
         for(FCM fcm : valuesFCM){
             token_fcm = fcm.getTokenFCM();
         }
+        //token_fcm = FirebaseInstanceId.getInstance().getToken();
 
+        Log.d("TOKEN LOGIN",""+token_fcm);
         tvForgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (editemail.isEmpty() || editpassword.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Email / Password masih kosong!", Toast.LENGTH_LONG).show();
                 } else {
-                    checkLogin(editemail,editpassword,token_fcm);
+                    checkLogin(editemail,editpassword,""+token_fcm);
                 }
             }
         });

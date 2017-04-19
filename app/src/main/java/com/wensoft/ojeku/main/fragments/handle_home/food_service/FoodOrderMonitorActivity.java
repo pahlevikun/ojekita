@@ -1,15 +1,13 @@
-package com.wensoft.ojeku.main.fragments.handle_order;
+package com.wensoft.ojeku.main.fragments.handle_home.food_service;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,22 +26,14 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -54,14 +44,9 @@ import com.wensoft.ojeku.config.DirectionsJSONParser;
 import com.wensoft.ojeku.config.GPSTracker;
 import com.wensoft.ojeku.database.DatabaseHandler;
 import com.wensoft.ojeku.main.MainActivity;
-import com.wensoft.ojeku.main.fragments.handle_home.LoadingScreenActivity;
-import com.wensoft.ojeku.main.fragments.handle_home.food_service.FoodDetailActivity;
-import com.wensoft.ojeku.main.fragments.handle_home.shuttle_service.CarServiceActivity;
-import com.wensoft.ojeku.pojo.Markers;
 import com.wensoft.ojeku.pojo.Profil;
 import com.wensoft.ojeku.singleton.AppController;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,14 +56,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class OrderDetailActivity extends FragmentActivity implements OnMapReadyCallback,
+public class FoodOrderMonitorActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener {
 
     private ProgressDialog loading;
@@ -89,6 +73,7 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
     private Polyline polyline;
 
     private ImageView imageView;
+    private View view;
 
 
     private GPSTracker gps;
@@ -97,23 +82,24 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
     private double latJemput, lngJemput, latTujuan, lngTujuan;
     private LatLng latLngJemput, latLngTujuan;
 
-    private Button btPesan, btCancel, btFinish, btFood, btTelepon, btSms;
+    private Button btPesan, btCancel, btFinish, btTelepon, btSms, btFoodDetail;
     private EditText etJemput, etTujuan, etNoteJemput, etNoteTujuan;
-    private String asal, order_type, start_latitude, start_longitude, end_latitude, end_longitude, alamatJemput, alamatTujuan, total_price, id_order, jarak,food_price;
-    private TextView tvJarak, tvHarga,tvNama, tvPlat, tvPhone, tvInvoice;
-    private View pembatas;
+    private String start_latitude, start_longitude, end_latitude, end_longitude, alamatJemput, alamatTujuan, food_price,total_price, id_order, jarak;
+    private TextView tvJarak, tvHarga, tvNama, tvPlat, tvInvoice, tvPhone;
+
     private LinearLayout layoutButton, linLayOrderInfo, linLayDriver;
 
-    private String nama, plat_nomor, telepon, invoice, urlAvatar, avatar;
+
+    private String invoice,order_id,Snote,distance,Saddress,Eaddress, startLat, startLng, endLat, endLng, nama, plat_nomor,telepon,avatar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_regular_service);
+        setContentView(R.layout.activity_food_serv);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map1);
-        mapFragment.getMapAsync(OrderDetailActivity.this);
+        mapFragment.getMapAsync(FoodOrderMonitorActivity.this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 //.addConnectionCallbacks(this)
@@ -137,105 +123,153 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
         tvJarak = (TextView) findViewById(R.id.tv_distance_order) ;
         tvHarga = (TextView) findViewById(R.id.tv_price_order);
         imageView = (ImageView) findViewById(R.id.profile_image);
-        pembatas = (View) findViewById(R.id.pembatas);
-        btFood = (Button) findViewById(R.id.btDetailFood);
         tvNama = (TextView) findViewById(R.id.tvNama);
         tvPlat = (TextView) findViewById(R.id.tvPlat);
         tvInvoice = (TextView) findViewById(R.id.tvInvoice);
         tvPhone = (TextView) findViewById(R.id.tvPhone);
-        imageView = (ImageView) findViewById(R.id.profile_image);
         btTelepon = (Button) findViewById(R.id.btTelepon);
         btSms = (Button) findViewById(R.id.btSMS);
+        btFoodDetail = (Button) findViewById(R.id.btDetailFood);
 
-        dataSource = new DatabaseHandler(this);
-        valuesProfil = (ArrayList<Profil>) dataSource.getAllProfils();
+        view = (View) findViewById(R.id.pembatas);
 
+        view.setVisibility(View.GONE);
+        etJemput.setVisibility(View.GONE);
+        etNoteJemput.setVisibility(View.GONE);
 
         Intent ambil = getIntent();
         id_order = ambil.getStringExtra("order_id");
-        start_latitude = ambil.getStringExtra("start_latitude");
+        /*start_latitude = ambil.getStringExtra("start_latitude");
         start_longitude = ambil.getStringExtra("start_longitude");
         end_latitude = ambil.getStringExtra("end_latitude");
         end_longitude = ambil.getStringExtra("end_longitude");
         alamatJemput = ambil.getStringExtra("alamat_penjemputan");
         alamatTujuan = ambil.getStringExtra("alamat_tujuan");
         total_price = ambil.getStringExtra("total_price");
-        jarak = ambil.getStringExtra("jarak");
-        order_type = ambil.getStringExtra("order_type");
-        asal = ambil.getStringExtra("asal");
+        jarak = ambil.getStringExtra("jarak");*/
+
+        startLat = ambil.getStringExtra("start_latitude");
+        startLng = ambil.getStringExtra("start_longitude");
+        endLat = ambil.getStringExtra("end_latitude");
+        endLng = ambil.getStringExtra("end_longitude");
+        Snote = ambil.getStringExtra("notes");
+        total_price = ambil.getStringExtra("total_price");
         food_price = ambil.getStringExtra("food_price");
+        distance = ambil.getStringExtra("distance");
+        Saddress = ambil.getStringExtra("address");
+        Eaddress = ambil.getStringExtra("endaddress");
+        invoice = ambil.getStringExtra("invoice");
 
-        linLayDriver.setVisibility(View.GONE);
+        nama = ambil.getStringExtra("nama_driver");
+        plat_nomor = ambil.getStringExtra("plat_nomor");
+        telepon = ambil.getStringExtra("telepon");
+        avatar = ambil.getStringExtra("avatar");
+        final String urlAvatar = "http://ojekita.com/"+avatar;
 
-        if(asal.equals("proses")){
-            checkDriver(id_order);
-        }
+        Log.d("HASIL",startLat+","+startLng);
+        Log.d("HASIL",endLat+","+endLng);
+        Log.d("HASIL",Snote+"");
+        Log.d("HASIL",Snote+"");
+        Log.d("HASIL",total_price+"");
+        Log.d("HASIL",distance+"");
+        Log.d("HASIL",Eaddress+"");
+        Log.d("lokasi ketiga",endLat+","+endLng);
 
-        Log.d("ORDER TYPE", ""+order_type);
-        Log.d("ORDER ID AMBIL", ""+id_order);
-
-        if(order_type.equals("3")){
-            etJemput.setVisibility(View.GONE);
-            etNoteJemput.setVisibility(View.GONE);
-            pembatas.setVisibility(View.GONE);
-            btFood.setVisibility(View.VISIBLE);
-            btFood.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(OrderDetailActivity.this, FoodDetailActivity.class);
-                    intent.putExtra("order_id",id_order);
-                    startActivity(intent);
-                }
-            });
-        }
-
-        latJemput = Double.valueOf(start_latitude);
-        lngJemput = Double.valueOf(start_longitude);
-        latTujuan = Double.valueOf(end_latitude);
-        lngTujuan = Double.valueOf(end_longitude);
+        latJemput = Double.valueOf(startLat);
+        lngJemput = Double.valueOf(startLng);
+        latTujuan = Double.valueOf(endLat);
+        lngTujuan = Double.valueOf(endLng);
 
         latLngJemput = new LatLng(latJemput, lngJemput);
         latLngTujuan = new LatLng(latTujuan, lngTujuan);
 
         String url = getDirectionsUrl(latLngJemput, latLngTujuan);
-        OrderDetailActivity.DownloadTask downloadTask = new OrderDetailActivity.DownloadTask();
+        FoodOrderMonitorActivity.DownloadTask downloadTask = new FoodOrderMonitorActivity.DownloadTask();
         downloadTask.execute(url);
 
-        layoutButton.setVisibility(View.VISIBLE);
-        linLayOrderInfo.setVisibility(View.VISIBLE);
-        btPesan.setVisibility(View.GONE);
-        etJemput.setEnabled(false);
-        etTujuan.setEnabled(false);
-        etNoteTujuan.setEnabled(false);
-        etNoteJemput.setEnabled(false);
-
         etJemput.setText(alamatJemput);
-        etTujuan.setText(alamatTujuan);
-        if (order_type.equals("2")){
-            tvHarga.setText("Rp. "+total_price+",-\n(Rp. "+food_price+",-)");
-        }else{
-            tvHarga.setText("Rp. "+total_price+",-");
-        }
-        tvJarak.setText(jarak+" KM");
+        etJemput.setVisibility(View.GONE);
+        etNoteJemput.setVisibility(View.GONE);
+        etTujuan.setText(Eaddress);
+        tvHarga.setText("Rp. "+total_price+",-\n(Rp. "+food_price+",-)");
+        tvJarak.setText(distance+" KM");
+        tvInvoice.setText("No Order : "+invoice);
 
         dataSource = new DatabaseHandler(this);
         valuesProfil = (ArrayList<Profil>) dataSource.getAllProfils();
 
-        btCancel.setVisibility(View.GONE);
+        //btCancel.setVisibility(View.GONE);
 
-        btFinish.setOnClickListener(new View.OnClickListener() {
+        linLayOrderInfo.setVisibility(View.VISIBLE);
+        linLayDriver.setVisibility(View.GONE);
+
+        btPesan.setVisibility(View.GONE);
+        layoutButton.setVisibility(View.VISIBLE);
+        etJemput.setEnabled(false);
+        etTujuan.setEnabled(false);
+        etNoteTujuan.setEnabled(false);
+        etNoteJemput.setEnabled(false);
+        linLayDriver.setVisibility(View.VISIBLE);
+        tvNama.setText(nama);
+        tvPlat.setText(plat_nomor);
+        tvPhone.setText(telepon);
+        Picasso.with(this).load(urlAvatar).into(imageView);
+        btTelepon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", telepon, null));
+                startActivity(intent);
+            }
+        });
+        btSms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", telepon, null));
+                startActivity(intent);
+            }
+        });
+        btFoodDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FoodOrderMonitorActivity.this, FoodDetailActivity.class);
+                intent.putExtra("order_id",id_order);
+                startActivity(intent);
             }
         });
 
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cancel(id_order);
+                alert.setTitle("Peringatan");
+                alert.setMessage("Batalkan order?");
+                alert.setPositiveButton("Ya",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO Auto-generated method stub
+                                cancel(id_order);
+                            }
+                        });
+                alert.setNegativeButton("Tidak",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO Auto-generated method stub
+                            }
+                        });
+                alert.show();
             }
         });
+        btFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FoodOrderMonitorActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -255,7 +289,7 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
         mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
 
-        mGoogleMap.addMarker(new MarkerOptions().position(latLngJemput).title("Lokasi Jemput").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_dest)));
+        mGoogleMap.addMarker(new MarkerOptions().position(latLngJemput).title("Lokasi Pembelian Makanan").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_dest)));
         mGoogleMap.addMarker(new MarkerOptions().position(latLngTujuan).title("Lokasi Tujuan").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_del)));
 
     }
@@ -343,7 +377,7 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            OrderDetailActivity.ParserTask parserTask = new OrderDetailActivity.ParserTask();
+            FoodOrderMonitorActivity.ParserTask parserTask = new FoodOrderMonitorActivity.ParserTask();
 
             // Invokes the thread for parsing the JSON data
             parserTask.execute(result);
@@ -425,12 +459,12 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
                     if (!error) {
-                        Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
+                        Intent intent = new Intent(FoodOrderMonitorActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
                 } catch (JSONException e) {
-                    Toast.makeText(OrderDetailActivity.this, ""+e, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FoodOrderMonitorActivity.this, ""+e, Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -438,7 +472,7 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
             @Override
             public void onErrorResponse(VolleyError error) {
                 hideDialog();
-                Toast.makeText(OrderDetailActivity.this, ""+error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(FoodOrderMonitorActivity.this, ""+error, Toast.LENGTH_SHORT).show();
             }
         }){
             @Override
@@ -470,6 +504,9 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
         int id = item.getItemId();
 
         if(id==android.R.id.home) {
+            Intent intent = new Intent(FoodOrderMonitorActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             finish();
             return true;
         }
@@ -477,98 +514,11 @@ public class OrderDetailActivity extends FragmentActivity implements OnMapReadyC
         return super.onOptionsItemSelected(item);
     }
 
-    private void checkDriver(final String order_id){
-        loading = ProgressDialog.show(this,"Mohon Tunggu","Sedang memesan...",false,false);
-
-
-        for (Profil profil : valuesProfil){
-                token = profil.getToken();
-            }
-        StringRequest jsonObjReq = new StringRequest(Request.Method.POST, APIConfig.API_CHECK, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                hideDialog();
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
-                    Log.d("HASIL NARIK", ""+error);
-                    if (!error) {
-                        JSONObject data = jObj.getJSONObject("data");
-                        nama = data.getString("nama_driver");
-                        plat_nomor = data.getString("plat_nomor");
-                        telepon = data.getString("telepon");
-                        avatar = data.getString("avatar");
-                        invoice = data.getString("invoice");
-                        Log.d("HASIL NARIK", ""+invoice);
-                        //double driverLat = data.getDouble("latitude");
-                        //double driverLng = data.getDouble("longitude");
-                        urlAvatar = "http://ojekita.com/"+avatar;
-
-                        linLayDriver.setVisibility(View.VISIBLE);
-                        tvNama.setText(nama);
-                        tvPlat.setText(plat_nomor);
-                        tvPhone.setText(telepon);
-                        tvInvoice.setText("No Order : "+invoice);
-
-                        Picasso.with(getApplicationContext()).load(urlAvatar).into(imageView);
-                        btTelepon.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", telepon, null));
-                                startActivity(intent);
-                            }
-                        });
-                        btSms.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", telepon, null));
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                } catch (JSONException e) {
-                    Toast.makeText(OrderDetailActivity.this, "" + e, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                hideDialog();
-                Toast.makeText(OrderDetailActivity.this, "" + error, Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            //Untuk post data menggunakan volley
-            //Data yang dikirim adalah email dan password
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("order_id", order_id);
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                String bearer = "Bearer " + token;
-                Map<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", bearer);
-                return headers;
-            }
-        };
-
-        int socketTimeout = 40000; // 40 seconds. You can change it
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        jsonObjReq.setRetryPolicy(policy);
-        AppController.getmInstance().addToRequestQueue(jsonObjReq);
-    }
-
-
-
     @Override
     public void onBackPressed() {
+        Intent intent = new Intent(FoodOrderMonitorActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
     }
 

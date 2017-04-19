@@ -65,7 +65,7 @@ public class OrderProcessAdapter extends BaseAdapter{
         // getting movie data for the row
         OrderProcess m = categoryItems.get(position);
         String orderType = m.getOrderType();
-        invoice.setText("Invoice : "+m.getIdOrder());
+        invoice.setText("Invoice : "+m.getInvoice_number());
         title.setText(m.getAlamat_tujuan());
         if(orderType.equals("1")){
             //title.setText("Kita Jemput");

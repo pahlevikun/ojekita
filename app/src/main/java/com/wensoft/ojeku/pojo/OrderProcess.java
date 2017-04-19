@@ -18,25 +18,9 @@ public class OrderProcess {
     String end_longitude;
     String total_price;
     String jarak;
+    String food_price;
 
     public OrderProcess() {
-    }
-
-    public OrderProcess(String idList, String idOrder, String orderType, String alamat_penjemputan, String alamat_tujuan,
-                        String invoice_number, String start_latitude, String start_longitude, String end_latitude,
-                        String end_longitude, String total_price, String jarak) {
-        this.idList = idList;
-        this.idOrder = idOrder;
-        this.orderType = orderType;
-        this.alamat_penjemputan = alamat_penjemputan;
-        this.alamat_tujuan = alamat_tujuan;
-        this.invoice_number = invoice_number;
-        this.start_latitude = start_latitude;
-        this.start_longitude = start_longitude;
-        this.end_latitude = end_latitude;
-        this.end_longitude = end_longitude;
-        this.total_price = total_price;
-        this.jarak = jarak;
     }
 
     public String getIdList() {
@@ -134,4 +118,32 @@ public class OrderProcess {
     public void setJarak(String jarak) {
         this.jarak = jarak;
     }
+
+    public String getFood_price() {
+        return food_price;
+    }
+
+    public void setFood_price(String food_price) {
+        this.food_price = food_price;
+    }
+
+    public OrderProcess(String idList, String idOrder, String orderType, String alamat_penjemputan, String alamat_tujuan,
+                        String invoice_number, String start_latitude, String start_longitude, String end_latitude,
+                        String end_longitude, String total_price, String jarak, String food_price) {
+        this.idList = idList;
+        this.idOrder = idOrder;
+        this.orderType = orderType;
+        this.alamat_penjemputan = alamat_penjemputan;
+        this.alamat_tujuan = alamat_tujuan;
+        this.invoice_number = invoice_number;
+        this.start_latitude = start_latitude;
+        this.start_longitude = start_longitude;
+        this.end_latitude = end_latitude;
+        this.end_longitude = end_longitude;
+        this.total_price = total_price;
+        this.jarak = jarak;
+        this.food_price = food_price;
+    }
+
+
 }

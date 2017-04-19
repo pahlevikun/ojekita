@@ -51,6 +51,7 @@
                 android:padding="4dp" />
 
             <View
+                android:id="@+id/pembatas"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginBottom="4dp"
@@ -79,6 +80,19 @@
                 android:textSize="13sp"
                 android:hint="Note..."
                 android:padding="4dp" />
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btDetailFood"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:text="DETAIL PESANAN"
+                android:textSize="10sp"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:textColor="@color/colorWhite"
+                android:textAllCaps="true"
+                android:background="@drawable/bg_button"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
         </LinearLayout>
 
         <LinearLayout
@@ -210,6 +224,7 @@
     </RelativeLayout>
 
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -259,7 +274,7 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:layout_weight="1"
-                android:text="Selesai"
+                android:text="Minimalkan"
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-condensed"
                 android:textStyle="bold"

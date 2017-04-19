@@ -2,9 +2,10 @@ package com.wensoft.ojeku.main.fragments.handle_home;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
@@ -23,9 +24,8 @@ import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.config.APIConfig;
 import com.wensoft.ojeku.database.DatabaseHandler;
 import com.wensoft.ojeku.main.MainActivity;
-import com.wensoft.ojeku.main.SplashActivity;
-import com.wensoft.ojeku.main.fragments.handle_home.shuttle_service.RegularServiceActivity;
-import com.wensoft.ojeku.main.handle_login.LandingActivity;
+import com.wensoft.ojeku.main.fragments.handle_home.food_service.FoodOrderDetailActivity;
+import com.wensoft.ojeku.main.fragments.handle_home.food_service.FoodOrderMonitorActivity;
 import com.wensoft.ojeku.pojo.Profil;
 import com.wensoft.ojeku.singleton.AppController;
 
@@ -35,10 +35,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class LoadingScreenActivity extends AppCompatActivity {
+public class LoadingScreenFoodActivity extends AppCompatActivity {
 
 
     private ProgressDialog loading;
@@ -46,13 +44,10 @@ public class LoadingScreenActivity extends AppCompatActivity {
     private DatabaseHandler dataSource;
     private String token;
 
-
-    public static final int HASIL = 2;
-
     private Button btCancel;
     private int batas = 0;
     private int delay = 3500;
-    private String order_id;
+    private String order_id,Snote,harga,distance,Saddress,Eaddress,total_price, startLat, startLng, endLat, endLng,food_price;
 
     private Handler handler;
     private Runnable runnable;
@@ -69,6 +64,25 @@ public class LoadingScreenActivity extends AppCompatActivity {
 
         Intent ambil = getIntent();
         order_id = ambil.getStringExtra("order_id");
+        startLat = ambil.getStringExtra("start_latitude");
+        startLng = ambil.getStringExtra("start_longitude");
+        endLat = ambil.getStringExtra("end_latitude");
+        endLng = ambil.getStringExtra("end_longitude");
+        Snote = ambil.getStringExtra("notes");
+        total_price = ambil.getStringExtra("total_price");
+        distance = ambil.getStringExtra("distance");
+        Saddress = ambil.getStringExtra("address");
+        Eaddress = ambil.getStringExtra("endaddress");
+        food_price = ambil.getStringExtra("food_price");
+
+        Log.d("HASIL",startLat+","+startLng);
+        Log.d("HASIL",endLat+","+endLng);
+        Log.d("HASIL",Snote+"");
+        Log.d("HASIL",Snote+"");
+        Log.d("HASIL",total_price+"");
+        Log.d("HASIL",distance+"");
+        Log.d("HASIL",Eaddress+"");
+        Log.d("lokasi kedua",endLat+","+endLng);
 
         btCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,11 +91,11 @@ public class LoadingScreenActivity extends AppCompatActivity {
             }
         });
 
-        perantaraCheck(order_id);
+        perantaraCheck(order_id,startLat,startLng,endLat,endLng);
 
     }
 
-    private void perantaraCheck(final String order_id){
+    private void perantaraCheck(final String order_id, final String startLat, final String startLng, final String endLat, final String endLng){
         ImageView iv = (ImageView) findViewById(R.id.ivVespa);
         TranslateAnimation moveLefttoRight = new TranslateAnimation(-400, 800, 0, 0);
         moveLefttoRight.setDuration(3300);
@@ -91,16 +105,20 @@ public class LoadingScreenActivity extends AppCompatActivity {
         new Handler().postDelayed(new Thread() {
             @Override
             public void run() {
-                check(order_id);
+                check(order_id,startLat,startLng,endLat,endLng);
             }
         }, delay);
     }
 
-    private void check(final String order_id) {
+    private void check(final String order_id, final String startLat, final String startLng, final String endLat, final String endLng) {
         
         for (Profil profil : valuesProfil){
             token = profil.getToken();
         }
+
+
+        Log.d("HASIL dalem",startLat+","+startLng);
+        Log.d("HASIL dalem",endLat+","+endLng);
 
         batas = batas + 1;
         if(batas==25){
@@ -118,7 +136,7 @@ public class LoadingScreenActivity extends AppCompatActivity {
                         if (!error) {
                             String pesan = jObj.getString("msg");
                             if (/*batas<=7&&!*/pesan.equals("Belum ada tanggapan dari driver")) {
-                                perantaraCheck(order_id);
+                                perantaraCheck(order_id, startLat, startLng, endLat, endLng);
                             } else {
                                 JSONObject data = jObj.getJSONObject("data");
                                 String nama_driver = data.getString("nama_driver");
@@ -128,21 +146,34 @@ public class LoadingScreenActivity extends AppCompatActivity {
                                 String invoice = data.getString("invoice");
                                 //double driverLat = data.getDouble("latitude");
                                 //double driverLng = data.getDouble("longitude");
-                                Intent resultIntent = new Intent();
+                                Intent resultIntent = new Intent(LoadingScreenFoodActivity.this, FoodOrderMonitorActivity.class);
                                 resultIntent.putExtra("nama_driver", nama_driver);
                                 resultIntent.putExtra("plat_nomor", plat_nomor);
                                 resultIntent.putExtra("telepon", telepon);
                                 resultIntent.putExtra("avatar", avatar);
                                 resultIntent.putExtra("invoice",invoice);
                                 resultIntent.putExtra("order_id", order_id);
+                                resultIntent.putExtra("start_latitude",startLat);
+                                resultIntent.putExtra("start_longitude",startLng);
+                                resultIntent.putExtra("end_latitude",endLat);
+                                resultIntent.putExtra("end_longitude",endLng);
+                                resultIntent.putExtra("notes",Snote);
+                                resultIntent.putExtra("total_price",total_price);
+                                resultIntent.putExtra("food_price",food_price);
+                                resultIntent.putExtra("distance",distance);
+                                resultIntent.putExtra("address",Saddress);
+                                resultIntent.putExtra("endaddress",Eaddress);
+                                Log.d("lokasi kirim",endLat+","+endLng);
                                 //resultIntent.putExtra("driverLat", driverLat);
                                 //resultIntent.putExtra("driverLng", driverLng);
-                                setResult(LoadingScreenActivity.RESULT_OK, resultIntent);
+                                resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(resultIntent);
                                 finish();
+                                //Toast.makeText(LoadingScreenFoodActivity.this, "Berhasil", Toast.LENGTH_SHORT).show();
                             }
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(LoadingScreenActivity.this, "" + e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoadingScreenFoodActivity.this, "" + e, Toast.LENGTH_SHORT).show();
                     }
                 }
             }, new Response.ErrorListener() {
@@ -150,7 +181,7 @@ public class LoadingScreenActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     //hideDialog();
-                    Toast.makeText(LoadingScreenActivity.this, "" + error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoadingScreenFoodActivity.this, "" + error, Toast.LENGTH_SHORT).show();
                 }
             }) {
                 //Untuk post data menggunakan volley
@@ -165,11 +196,8 @@ public class LoadingScreenActivity extends AppCompatActivity {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     String bearer = "Bearer " + token;
-                    Map<String, String> headersSys = super.getHeaders();
                     Map<String, String> headers = new HashMap<String, String>();
-                    headersSys.remove("Authorization");
                     headers.put("Authorization", bearer);
-                    headers.putAll(headersSys);
                     return headers;
                 }
             };
@@ -201,12 +229,12 @@ public class LoadingScreenActivity extends AppCompatActivity {
                     JSONObject jObj = new JSONObject(response);
                     boolean error = jObj.getBoolean("error");
                     if (!error) {
-                        Intent intent = new Intent(LoadingScreenActivity.this, MainActivity.class);
+                        Intent intent = new Intent(LoadingScreenFoodActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
                 } catch (JSONException e) {
-                    Toast.makeText(LoadingScreenActivity.this, ""+e, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoadingScreenFoodActivity.this, ""+e, Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -214,7 +242,7 @@ public class LoadingScreenActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 hideDialog();
-                Toast.makeText(LoadingScreenActivity.this, ""+error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoadingScreenFoodActivity.this, ""+error, Toast.LENGTH_SHORT).show();
             }
         }){
             @Override

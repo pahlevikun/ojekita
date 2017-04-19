@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -90,9 +91,12 @@ public class FoodServiceActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(FoodServiceActivity.this, FoodMenuActivity.class);
-                intent.putExtra("id",foodBannerList.get(position).getCategory_id());
+                Intent intent = new Intent(FoodServiceActivity.this, FoodMenuWebActivity.class);
+                intent.putExtra("id",foodBannerList.get(position).getId());
                 intent.putExtra("nama",foodBannerList.get(position).getName());
+                intent.putExtra("latitude",foodBannerList.get(position).getLatitude());
+                intent.putExtra("longitude",foodBannerList.get(position).getLongitude());
+                intent.putExtra("alamat",foodBannerList.get(position).getAlamat());
                 startActivity(intent);
             }
         });
@@ -111,12 +115,6 @@ public class FoodServiceActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(FoodServiceActivity.this, FoodRestaurantsActivity.class);
                 startActivity(intent);
-            }
-        });
-        tvKategori.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
         tvKategori.setVisibility(View.GONE);
@@ -150,9 +148,10 @@ public class FoodServiceActivity extends AppCompatActivity {
                             Double longitude = data.getDouble("longitude");
                             String is_banner = data.getString("is_banner");
                             String image = data.getString("image");
+                            String alamat = data.getString("alamat");
                             if(is_banner.equals("1")){
                                 foodBannerList.add(new FoodBanner(String.valueOf(i),id,category_id,name,open_time,
-                                        close_time,latitude,longitude,is_banner,image));
+                                        close_time,latitude,longitude,is_banner,image,alamat));
                             }
                         }
                         getKategori();
@@ -215,9 +214,7 @@ public class FoodServiceActivity extends AppCompatActivity {
                                 String name = isi.getString("name");
                                 String banner = isi.getString("banner");
                                 String is_featured = isi.getString("is_featured");
-                                if(banner==null||banner.equals("")){
-                                    banner = "";
-                                }
+                                Log.d("HASIL 1",banner+"");
                                 foodCategoryList.add(new FoodCategory(String.valueOf(i),id,name,banner,is_featured));
                             }
                         } catch (JSONException e) {

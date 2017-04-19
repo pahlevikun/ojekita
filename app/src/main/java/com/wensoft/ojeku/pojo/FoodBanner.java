@@ -15,6 +15,7 @@ public class FoodBanner {
     public Double longitude;
     public String is_banner;
     public String image;
+    public String alamat;
 
 
     public FoodBanner() {
@@ -100,8 +101,16 @@ public class FoodBanner {
         this.image = image;
     }
 
+    public String getAlamat() {
+        return alamat;
+    }
+
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
+    }
+
     public FoodBanner(String marker_id, String id, String category_id, String name, String open_time, String close_time,
-                      Double latitude, Double longitude, String is_banner, String image) {
+                      Double latitude, Double longitude, String is_banner, String image, String alamat) {
         this.marker_id = marker_id;
         this.id = id;
         this.category_id = category_id;
@@ -112,6 +121,7 @@ public class FoodBanner {
         this.longitude = longitude;
         this.is_banner = is_banner;
         this.image = image;
+        this.alamat = alamat;
     }
 
 }

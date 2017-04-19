@@ -31,7 +31,7 @@
             android:textStyle="bold"
             android:textSize="18sp"
             android:gravity="center"
-            android:text="Ojek Kita"/>
+            android:text="Kita Jemput"/>
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"

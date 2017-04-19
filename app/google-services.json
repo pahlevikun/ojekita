@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "334831481406",
-    "firebase_url": "https://ojekita-160416.firebaseio.com",
-    "project_id": "ojekita-160416",
-    "storage_bucket": "ojekita-160416.appspot.com"
+    "project_number": "894421135776",
+    "firebase_url": "https://ojekita-29f32.firebaseio.com",
+    "project_id": "ojekita-29f32",
+    "storage_bucket": "ojekita-29f32.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:334831481406:android:61e9af7388bc6873",
+        "mobilesdk_app_id": "1:894421135776:android:61e9af7388bc6873",
         "android_client_info": {
           "package_name": "com.wensoft.ojeku"
         }
       },
       "oauth_client": [
         {
-          "client_id": "334831481406-jt6uppf9c5n2mj8ivv80u8nnpn9eb0iq.apps.googleusercontent.com",
+          "client_id": "894421135776-7mgs7tb0g716d3vvbhh5ep9msg6guk35.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wensoft.ojeku",
+            "certificate_hash": "35c1872f651339cf84277afadbf21866ce7b6202"
+          }
+        },
+        {
+          "client_id": "894421135776-p967ksiopsc8l5abjesje6p7efu70cve.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD2m2gz1arnOMo37vz6_ohpmur-xEwfNg8"
+          "current_key": "AIzaSyC8DKEgWEU7zPCHN37TEUh0O6sC6NJWRbI"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "894421135776-p967ksiopsc8l5abjesje6p7efu70cve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

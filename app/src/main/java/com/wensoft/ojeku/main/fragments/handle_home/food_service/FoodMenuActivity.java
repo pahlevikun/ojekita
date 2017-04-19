@@ -150,7 +150,7 @@ public class FoodMenuActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("restaurants_id", "2");
+                params.put("restaurants_id", id);
 
                 return params;
             }

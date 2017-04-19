@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -44,6 +47,7 @@ public class FoodRestaurantsCategoryActivity extends AppCompatActivity {
     private DatabaseHandler dataSource;
     private ListView listView;
     private FoodRestaurantsAdapter adapterListView;
+    private EditText cari;
     private List<FoodBanner> foodBannerList = new ArrayList<FoodBanner>();
 
 
@@ -59,6 +63,7 @@ public class FoodRestaurantsCategoryActivity extends AppCompatActivity {
         judul = ambil.getStringExtra("nama");
         id = ambil.getStringExtra("id");
         setTitle("Kategori "+judul);
+        cari = (EditText) findViewById(R.id.etSearch);
 
         dataSource = new DatabaseHandler(this);
         valuesProfil = (ArrayList<Profil>) dataSource.getAllProfils();
@@ -66,14 +71,40 @@ public class FoodRestaurantsCategoryActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listViewFoodCategoryRestaurants);
         adapterListView = new FoodRestaurantsAdapter(this, foodBannerList);
         listView.setAdapter(adapterListView);
+        listView.setTextFilterEnabled(true);
 
         makeRequest();
+        cari.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                adapterListView.getFilter().filter(charSequence);
+                adapterListView.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(FoodRestaurantsCategoryActivity.this, FoodMenuActivity.class);
-                intent.putExtra("id",foodBannerList.get(position).getCategory_id());
+                Intent intent = new Intent(FoodRestaurantsCategoryActivity.this, FoodMenuWebActivity.class);
+                /*intent.putExtra("id",foodBannerList.get(position).getCategory_id());
                 intent.putExtra("nama",foodBannerList.get(position).getName());
+                intent.putExtra("latitude",foodBannerList.get(position).getLatitude());
+                intent.putExtra("longitude",foodBannerList.get(position).getLongitude());
+                intent.putExtra("alamat",foodBannerList.get(position).getAlamat());*/
+                intent.putExtra("id",adapterListView.getId(position));
+                intent.putExtra("nama",adapterListView.getName(position));
+                intent.putExtra("latitude",adapterListView.getLat(position));
+                intent.putExtra("longitude",adapterListView.getLng(position));
+                intent.putExtra("alamat",adapterListView.getAlamat(position));
                 startActivity(intent);
             }
         });
@@ -109,9 +140,10 @@ public class FoodRestaurantsCategoryActivity extends AppCompatActivity {
                             Double latitude = data.getDouble("latitude");
                             Double longitude = data.getDouble("longitude");
                             String is_banner = data.getString("is_banner");
+                            String alamat = data.getString("alamat");
                             if(is_banner.equals("0")){
                                 foodBannerList.add(new FoodBanner(String.valueOf(i),id,category_id,name,open_time,
-                                        close_time,latitude,longitude,is_banner,""));
+                                        close_time,latitude,longitude,is_banner,"",alamat));
                             }
                         }
                     }
@@ -166,6 +198,7 @@ public class FoodRestaurantsCategoryActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+
         finish();
     }
 

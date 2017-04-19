@@ -20,4 +20,5 @@ public class APIConfig {
     public static String API_CHECK = "http://ojekita.com/api/user/checkorder";
     public static String API_ORDER_REGULAR = "http://ojekita.com/api/order/postorder";
     public static String API_ORDER_CANCEL = "http://ojekita.com/api/order/cancelorder";
+    public static String API_FOOD_DETAIL = "http://ojekita.com/api/order/detailfood";
 }

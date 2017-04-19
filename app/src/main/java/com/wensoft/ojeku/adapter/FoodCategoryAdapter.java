@@ -12,11 +12,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.pojo.FoodCategory;
 
 import java.util.List;
+
+import static com.wensoft.ojeku.singleton.AppController.context;
 
 /**
  * Created by farhan on 3/9/17.
@@ -62,8 +66,11 @@ public class FoodCategoryAdapter extends BaseAdapter{
         // getting movie data for the row
         FoodCategory m = categoryItems.get(position);
         title.setText(m.getName());
-        if(!m.getBanner().equals("")){
-
+        if(m.getBanner().equals(null)) {
+            Picasso.with(context).load(R.drawable.ic_collections_black_24dp).into(imageView);
+        }else{
+            String urlAvatar = "http://ojekita.com/banner/"+ m.getBanner();
+            Picasso.with(context).load(urlAvatar).into(imageView);
         }
 
         return convertView;

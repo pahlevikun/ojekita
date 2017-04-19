@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,6 +95,10 @@ public class OrderCompleteFragment extends Fragment {
                 intent.putExtra("alamat_tujuan",dataList.get(position).getAlamat_tujuan());
                 intent.putExtra("total_price",dataList.get(position).getTotal_price());
                 intent.putExtra("jarak",dataList.get(position).getJarak());
+                intent.putExtra("order_type",dataList.get(position).getOrderType());
+                intent.putExtra("food_price",dataList.get(position).getFood_price());
+                intent.putExtra("asal","selesai");
+                Log.d("ORDER ID KIRIM",""+dataList.get(position).getIdOrder());
                 startActivity(intent);
             }
         });
@@ -137,13 +142,15 @@ public class OrderCompleteFragment extends Fragment {
                                 String alamat_penjemputan = isi.getString("alamat_penjemputan");
                                 String invoice_number = isi.getString("invoice_number");
                                 String total_price = isi.getString("total_price");
+                                String food_price = isi.getString("food_price");
                                 String jarak = isi.getString("jarak");
                                 String nama_driver = isi.getString("nama_driver");
                                 String avatar_driver = isi.getString("avatar_driver");
                                 String plat_nomor = isi.getString("plat_nomor");
+                                Log.d("ORDER ID NARIK",""+order_id);
                                 dataList.add(new OrderComplete(String.valueOf(i),order_id,order_type,invoice_number,alamat_penjemputan,alamat_tujuan,
                                         total_price,jarak,nama_driver,avatar_driver,plat_nomor,"telepon_driver",start_latitude,start_longitude,
-                                        end_latitude,end_longitude));
+                                        end_latitude,end_longitude,food_price));
                             }
                         } catch (JSONException e) {
                             Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();

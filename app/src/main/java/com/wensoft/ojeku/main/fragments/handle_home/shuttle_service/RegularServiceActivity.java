@@ -1,11 +1,15 @@
 package com.wensoft.ojeku.main.fragments.handle_home.shuttle_service;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,6 +60,7 @@ import com.wensoft.ojeku.config.GPSTracker;
 import com.wensoft.ojeku.database.DatabaseHandler;
 import com.wensoft.ojeku.main.MainActivity;
 import com.wensoft.ojeku.main.fragments.handle_home.LoadingScreenActivity;
+import com.wensoft.ojeku.main.fragments.handle_home.food_service.FoodOrderDetailActivity;
 import com.wensoft.ojeku.pojo.Markers;
 import com.wensoft.ojeku.pojo.Profil;
 import com.wensoft.ojeku.singleton.AppController;
@@ -102,13 +107,13 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
-    private Marker mCurrLocationMarker, markerJemput, markerTujuan;
+    private Marker mCurrLocationMarker, markerJemput, markerTujuan, markerDriver;
     private double latJemput, lngJemput, latTujuan, lngTujuan;
     private LatLng latLngJemput, latLngTujuan;
 
-    private Button btPesan, btCancel, btFinish;
+    private Button btPesan, btCancel, btFinish, btTelepon, btSms;
     private EditText etJemput, etTujuan, etNoteJemput, etNoteTujuan;
-    private String jemput, tujuan, alamatJemput, alamatTujuan, noteJemput, noteTujuan;
+    private String jemput, tujuan, alamatJemput, alamatTujuan, noteJemput, noteTujuan, message;
     private TextView tvJarak, tvHarga, tvNama, tvPlat, tvPhone, tvInvoice;
 
     private static final int PICK = 1;
@@ -134,6 +139,8 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
                 .build();
 
 
+        btSms = (Button) findViewById(R.id.btSMS);
+        btTelepon = (Button) findViewById(R.id.btTelepon);
         btPesan = (Button) findViewById(R.id.buttonPesan);
         btCancel = (Button) findViewById(R.id.buttonCancel);
         btFinish = (Button) findViewById(R.id.buttonSelesai);
@@ -176,13 +183,15 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
 
         gps = new GPSTracker(RegularServiceActivity.this);
         getLocation(gps.getLatitude(),gps.getLongitude());
+        //makeJsonObjectRequest();
     }
 
     private void search(int kode) {
         try {
-            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                    .build(this);
-            startActivityForResult(intent, kode);
+            //Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
+            //startActivityForResult(intent, kode);
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            startActivityForResult(builder.build(this), kode);
         } catch (GooglePlayServicesRepairableException e) {
 
             GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(), 0).show();
@@ -199,11 +208,27 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
         if (resultCode == RESULT_OK) {
             String nama = data.getStringExtra("nama_driver");
             String plat_nomor = data.getStringExtra("plat_nomor");
-            String telepon = data.getStringExtra("telepon");
+            final String telepon = data.getStringExtra("telepon");
             String avatar = data.getStringExtra("avatar");
-            final String urlAvatar = "http://ojekita.com/assets/images/"+avatar;
+            final String invoice = data.getStringExtra("invoice");
+            final String urlAvatar = "http://ojekita.com/"+avatar;
             final String orderid = data.getStringExtra("order_id");
             if(nama!=null){
+                btTelepon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", telepon, null));
+                        startActivity(intent);
+                    }
+                });
+                btSms.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", telepon, null));
+                        startActivity(intent);
+                    }
+                });
+                //markerDriver.remove();
                 btPesan.setVisibility(View.GONE);
                 layoutButton.setVisibility(View.VISIBLE);
                 etJemput.setEnabled(false);
@@ -214,8 +239,17 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
                 tvNama.setText(nama);
                 tvPlat.setText(plat_nomor);
                 tvPhone.setText(telepon);
+                tvInvoice.setText("No Order : "+invoice);
                 Picasso.with(this).load(urlAvatar).into(imageView);
 
+                /*int SPLASH_TIME_OUT = 180000;
+
+                new Handler().postDelayed(new Thread() {
+                    @Override
+                    public void run() {
+                        btCancel.setVisibility(View.GONE);
+                    }
+                }, SPLASH_TIME_OUT);*/
 
                 btFinish.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -224,62 +258,87 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
                     }
                 });
 
+                final AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 btCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        cancel(orderid);
+                        alert.setTitle("Peringatan");
+                        alert.setMessage("Batalkan order?");
+                        alert.setPositiveButton("Ya",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // TODO Auto-generated method stub
+                                        cancel(orderid);
+                                    }
+                                });
+                        alert.setNegativeButton("Tidak",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // TODO Auto-generated method stub
+                                    }
+                                });
+                        alert.show();
                     }
                 });
             }
             Place place = PlacePicker.getPlace(data, this);
             switch (requestCode) {
                 case PICK:
+                    try{
+                        etJemput.setText(place.getAddress().toString());
+                        jemput = place.getAddress().toString();
+                        latJemput = place.getLatLng().latitude;
+                        lngJemput = place.getLatLng().longitude;
+                        alamatJemput = place.getAddress().toString();
+                        if(markerJemput==null){
+                            markerJemput = mGoogleMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Lokasi Jemput").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_dest)));
+                        }else{
+                            markerJemput.remove();
+                            markerJemput = mGoogleMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Lokasi Jemput").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_dest)));
+                        }
+                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
 
-                    etJemput.setText(place.getName().toString());
-                    jemput = place.getName().toString();
-                    latJemput = place.getLatLng().latitude;
-                    lngJemput = place.getLatLng().longitude;
-                    alamatJemput = place.getAddress().toString();
-                    if(markerJemput==null){
-                        markerJemput = mGoogleMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Lokasi Jemput").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_dest)));
-                    }else{
-                        markerJemput.remove();
-                        markerJemput = mGoogleMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Lokasi Jemput").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_dest)));
+                        //panggil method  buat request harganya ke server, atau gk perhitungan lu
+                        requestHarga();
+
+
+                        // perintah ini digunain untuk ngambil data yang dibutuhin dari API (alamat, lat, lng)
+                        Log.e("nama",place.getName().toString());
+                        Log.e("alamat",place.getAddress().toString());
+                        Log.e("latitude", String.valueOf(place.getLatLng().latitude));
+                        Log.e("longitude", String.valueOf(place.getLatLng().longitude));
+                    }catch(Exception e){
+                        Toast.makeText(this, "Koneksi tidak stabil, periksa koneksi atau pilih dengan perlahan!", Toast.LENGTH_LONG).show();
                     }
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
-
-                    //panggil method  buat request harganya ke server, atau gk perhitungan lu
-                    requestHarga();
-
-
-                    // perintah ini digunain untuk ngambil data yang dibutuhin dari API (alamat, lat, lng)
-                    Log.e("nama",place.getName().toString());
-                    Log.e("alamat",place.getAddress().toString());
-                    Log.e("latitude", String.valueOf(place.getLatLng().latitude));
-                    Log.e("longitude", String.valueOf(place.getLatLng().longitude));
                     break;
                 case DESTINATION:
-                    etTujuan.setText(place.getName().toString());
-                    tujuan = place.getName().toString();
-                    latTujuan = place.getLatLng().latitude;
-                    lngTujuan = place.getLatLng().longitude;
-                    alamatTujuan = place.getAddress().toString();
-                    if(markerTujuan==null){
-                        markerTujuan = mGoogleMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Lokasi Tujuan").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_del)));
-                    }else{
-                        markerTujuan.remove();
-                        markerTujuan = mGoogleMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Lokasi Tujuan").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_del)));
+                    try{
+                        etTujuan.setText(place.getAddress().toString());
+                        tujuan = place.getAddress().toString();
+                        latTujuan = place.getLatLng().latitude;
+                        lngTujuan = place.getLatLng().longitude;
+                        alamatTujuan = place.getAddress().toString();
+                        if(markerTujuan==null){
+                            markerTujuan = mGoogleMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Lokasi Tujuan").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_del)));
+                        }else{
+                            markerTujuan.remove();
+                            markerTujuan = mGoogleMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Lokasi Tujuan").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_del)));
+                        }
+                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
+
+                        //panggil method  buat request harganya ke server, atau gk perhitungan lu
+                        requestHarga();
+
+                        // perintah ini digunain untuk ngambil data yang dibutuhin dari API (alamat, lat, lng)
+                        Log.e("nama",place.getName().toString());
+                        Log.e("alamat",place.getAddress().toString());
+                        Log.e("latitude", String.valueOf(place.getLatLng().latitude));
+                        Log.e("longitude", String.valueOf(place.getLatLng().longitude));
+                    }catch(Exception e){
+                        Toast.makeText(this, "Koneksi tidak stabil, periksa koneksi atau pilih dengan perlahan!", Toast.LENGTH_LONG).show();
                     }
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
-
-                    //panggil method  buat request harganya ke server, atau gk perhitungan lu
-                    requestHarga();
-
-                    // perintah ini digunain untuk ngambil data yang dibutuhin dari API (alamat, lat, lng)
-                    Log.e("nama",place.getName().toString());
-                    Log.e("alamat",place.getAddress().toString());
-                    Log.e("latitude", String.valueOf(place.getLatLng().latitude));
-                    Log.e("longitude", String.valueOf(place.getLatLng().longitude));
                     break;
                 case OUTPUT:
 
@@ -289,15 +348,18 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
     }
 
     public void requestHarga(){
-        if(alamatJemput!=null&&alamatTujuan!=null){
-
+        if(alamatJemput!=null&&alamatTujuan!=null) {
+            if(markerDriver!=null) {
+                markerList.clear();
+                markerDriver.remove();
+            }
             latLngJemput = new LatLng(latJemput, lngJemput);
             latLngTujuan = new LatLng(latTujuan, lngTujuan);
 
             String url = getDirectionsUrl(latLngJemput, latLngTujuan);
             RegularServiceActivity.DownloadTask downloadTask = new RegularServiceActivity.DownloadTask();
             downloadTask.execute(url);
-            CalculationByDistance(latLngJemput,latLngTujuan);
+            CalculationByDistance(latLngJemput, latLngTujuan);
             /*if(jarakKM>50){
                 jarakKM = jarakKM - 10;
                 harga = jarakKM * 2000;
@@ -313,38 +375,53 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
             }else{
                 harga = 25000;
             }*/
-            if (kmInDec>5){
-                jarakKM = kmInDec;
-                jarakKM = jarakKM - 5;
-                harga = jarakKM * 2000;
-                harga = harga + 10000;
-            }else {
-                jarakKM = kmInDec;
-                harga = 10000;
-            }
-            tvHarga.setText("Rp. "+harga);
-            tvJarak.setText(kmInDec+" KM");
-            noteTujuan = etNoteTujuan.getText().toString();
-            noteJemput = etNoteJemput.getText().toString();
-
-            if (noteTujuan.length()==0){
-                noteTujuan="Tidak ada Note";
-            }if (noteJemput.length()==0){
-                noteJemput="Tidak ada Note";
-            }
-            linLayOrderInfo.setVisibility(View.VISIBLE);
-            btPesan.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    makeOrder(""+harga, ""+latJemput, ""+lngJemput, ""+latTujuan, ""+lngTujuan, alamatJemput,alamatTujuan,noteJemput,noteTujuan,""+kmInDec);
-                    Log.i("pesan harga : ",""+harga);
-                    Log.i("pesan latAwal : ",""+latJemput);
-                    Log.i("pesan lngAwal : ",""+lngJemput);
-                    Log.i("pesan latAkhir : ",""+latTujuan);
-                    Log.i("pesan lngAkhir : ",""+lngTujuan);
+            /*if (kmInDec > 50) {
+                final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setTitle("Peringatan");
+                alert.setMessage("Tidak bisa memesan lebih dari 50 KM");
+                alert.setPositiveButton("Ya",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO Auto-generated method stub
+                            }
+                        });
+                alert.show();
+            } else {*/
+                if (kmInDec > 5) {
+                    jarakKM = kmInDec;
+                    jarakKM = jarakKM - 5;
+                    harga = jarakKM * 2000;
+                    harga = harga + 10000;
+                } else {
+                    jarakKM = kmInDec;
+                    harga = 10000;
                 }
-            });
-        }
+                tvHarga.setText("Rp. " + harga);
+                tvJarak.setText(kmInDec + " KM");
+                noteTujuan = etNoteTujuan.getText().toString();
+                noteJemput = etNoteJemput.getText().toString();
+
+                if (noteTujuan.length() == 0) {
+                    noteTujuan = "Tidak ada Note";
+                }
+                if (noteJemput.length() == 0) {
+                    noteJemput = "Tidak ada Note";
+                }
+                linLayOrderInfo.setVisibility(View.VISIBLE);
+                btPesan.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        makeOrder("" + harga, "" + latJemput, "" + lngJemput, "" + latTujuan, "" + lngTujuan, alamatJemput, alamatTujuan, noteJemput, noteTujuan, "" + kmInDec);
+                        Log.i("pesan harga : ", "" + harga);
+                        Log.i("pesan latAwal : ", "" + latJemput);
+                        Log.i("pesan lngAwal : ", "" + lngJemput);
+                        Log.i("pesan latAkhir : ", "" + latTujuan);
+                        Log.i("pesan lngAkhir : ", "" + lngTujuan);
+                    }
+                });
+            }
+        //}
     }
 
     public double CalculationByDistance(LatLng StartP, LatLng EndP) {
@@ -407,7 +484,7 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
         mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
 
-        //makeJsonObjectRequest();
+        makeJsonObjectRequest();
     }
 
     public void getLocation(final double lat, final double lng){
@@ -648,21 +725,26 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
                         JSONArray dataArray = jObj.getJSONArray("data");
                         try {
                             //looping untuk mendapatkan seluruh item yang di order oleh user
-                            Markers markers = new Markers();
+                            //Markers markers = new Markers();
                             for(int i = 0; i < dataArray.length();i++) {
                                 JSONObject data = dataArray.getJSONObject(i);
-                                String name = data.getString("name");
-                                String nopol = data.getString("plat_nomor");
-                                double latitude = data.getDouble("latitude");
-                                double longitude = data.getDouble("longitude");
-                                String avatar = data.getString("avatar");
-                                markerList.add(new Markers(String.valueOf(i),nopol,name,latitude, longitude,avatar));
+                                try{
+                                    String name = data.getString("name");
+                                    String nopol = data.getString("plat_nomor");
+                                    double latitude = data.getDouble("latitude");
+                                    double longitude = data.getDouble("longitude");
+                                    String avatar = data.getString("avatar");
+                                    markerList.add(new Markers(String.valueOf(i),nopol,name,latitude, longitude,avatar));
+                                }catch(Exception e){
+
+                                }
                             }
                             for(int i =0;i<markerList.size();i++){
                                 LatLng latLng = new LatLng(markerList.get(i).getLat(),markerList.get(i).getLong());
-                                mGoogleMap.addMarker(new MarkerOptions()
+                                markerDriver = mGoogleMap.addMarker(new MarkerOptions()
                                         .position(latLng)
-                                        .title(markerList.get(i).getNama_mitra())).showInfoWindow();
+                                        .title(markerList.get(i).getNama_mitra())
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_v)));
                             }
                         } catch (JSONException e) {
                             Toast.makeText(RegularServiceActivity.this, e.toString(), Toast.LENGTH_LONG).show();
@@ -719,6 +801,23 @@ public class RegularServiceActivity extends AppCompatActivity implements OnMapRe
                         Intent intent = new Intent(RegularServiceActivity.this, LoadingScreenActivity.class);
                         intent.putExtra("order_id",order_id);
                         startActivityForResult(intent,OUTPUT);
+                    }else{
+                        if (jObj.has("msg")){
+                            message = jObj.getString("msg");
+                        }else if(jObj.has("message")){
+                            message = jObj.getString("message");
+                        }
+                        final AlertDialog.Builder alert = new AlertDialog.Builder(RegularServiceActivity.this);
+                        alert.setTitle("Peringatan");
+                        alert.setMessage(""+message);
+                        alert.setPositiveButton("Ya",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // TODO Auto-generated method stub
+                                    }
+                                });
+                        alert.show();
                     }
                 } catch (JSONException e) {
                     Toast.makeText(RegularServiceActivity.this, ""+e, Toast.LENGTH_SHORT).show();

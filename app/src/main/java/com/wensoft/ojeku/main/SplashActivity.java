@@ -7,7 +7,9 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.wensoft.ojeku.Manifest;
 import com.wensoft.ojeku.R;
 import com.wensoft.ojeku.main.handle_login.LandingActivity;
@@ -21,6 +23,7 @@ public class SplashActivity extends AppCompatActivity {
 
         splashLanding();
         verifyStoragePermissions(this);
+        Log.d("TOKEN",""+ FirebaseInstanceId.getInstance().getToken());
     }
 
     private void splashLanding() {

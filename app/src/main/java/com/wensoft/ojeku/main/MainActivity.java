@@ -122,10 +122,11 @@ public class MainActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
             if (checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED &&
-                    checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
+                    checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED &&
+                        checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
 
                 Log.d("permission", "permission denied to SEND_SMS - requesting it");
-                String[] permissions = {Manifest.permission.SEND_SMS,Manifest.permission.CALL_PHONE};
+                String[] permissions = {Manifest.permission.SEND_SMS,Manifest.permission.CALL_PHONE, Manifest.permission.ACCESS_FINE_LOCATION};
 
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
 

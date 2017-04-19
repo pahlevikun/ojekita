@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
         for(FCM fcm : valuesFCM){
             token_fcm = fcm.getTokenFCM();
         }
+        Log.d("TOKEN LOGIN",""+token_fcm);
+
 
         created_at = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
 
@@ -82,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (editName.isEmpty() || (editPhone.isEmpty()&&editPassword.length()<6) || editEmail.isEmpty() || editPassword.isEmpty()) {
                     Toast.makeText(RegisterActivity.this, "Kolom yang tersedia belum diisi dengan benar!", Toast.LENGTH_LONG).show();
                 } else {
-                    registerUser(editName,editEmail,editPassword,editPhone,token_fcm);
+                    registerUser(editName,editEmail,editPassword,editPhone,""+token_fcm);
                 }
             }
         });
@@ -140,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
                 params.put("email", email);
                 params.put("password", password);
                 params.put("phone", telp);
-                params.put("fcm_token", "TOKENS");
+                params.put("fcm_token", tokens);
 
                 return params;
             }
